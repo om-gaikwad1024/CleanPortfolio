@@ -1,7 +1,10 @@
+/* Pinned while page scroll travels through every project: one --step of
+   scrolling per project after the first. */
 .portfolio {
+  --step: 50svh;
   position: relative;
   z-index: var(--z-content);
-  height: 100svh;
+  height: calc(100svh + (var(--n) - 1) * var(--step));
   background: var(--color-bg);
 }
 
@@ -14,11 +17,17 @@
   pointer-events: none;
 }
 
-.hint {
+.sticky {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  overflow: hidden;
+}
+
+.hint,
+.count {
   position: absolute;
-  left: 50%;
   bottom: 40px;
-  translate: -50% 12px;
   color: var(--color-muted);
   font-size: 13px;
   letter-spacing: 0.12em;
@@ -28,7 +37,17 @@
   opacity: 0;
   transition:
     opacity 0.8s ease,
-    translate 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+    translate 0.8s var(--ease-out);
+}
+
+.hint {
+  left: 50%;
+  translate: -50% 12px;
+}
+
+.count {
+  right: var(--gutter);
+  translate: 0 12px;
 }
 
 .hint.shown {
@@ -36,8 +55,14 @@
   translate: -50% 0;
 }
 
+.count.shown {
+  opacity: 1;
+  translate: 0 0;
+}
+
 @media (max-width: 768px) {
-  .hint {
+  .hint,
+  .count {
     bottom: 28px;
     font-size: 11px;
   }

@@ -1,0 +1,121 @@
+/* Pinned for (entries − 1) slots of scrolling; 1px of scroll = 1px of travel. */
+.timeline {
+  --slot: clamp(380px, 36vw, 560px);
+  position: relative;
+  height: calc(100svh + (var(--n) - 1) * var(--slot));
+}
+
+.sticky {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  overflow: hidden;
+}
+
+/* Current entry's year, huge and outlined behind everything. */
+.bgYear {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  translate: -50% -50%;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.08);
+  font-size: clamp(160px, 30vw, 440px);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+}
+
+.header {
+  position: absolute;
+  left: var(--gutter);
+  right: var(--gutter);
+  bottom: 32px;
+  display: flex;
+  justify-content: space-between;
+  color: var(--color-muted);
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+/* Centre needle: whichever entry sits on it is the active one. */
+.needle {
+  position: absolute;
+  left: 50%;
+  top: calc(50% - 36px);
+  width: 1px;
+  height: 72px;
+  background: var(--color-accent);
+}
+
+/* The track starts and ends with an entry centred on the needle. */
+.track {
+  position: absolute;
+  inset: 0 auto 0 0;
+  display: flex;
+  padding-inline: calc(50% - var(--slot) / 2);
+  list-style: none;
+  will-change: translate;
+}
+
+.track::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(50% - 7px);
+  height: 14px;
+  background: repeating-linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.45) 0 1px,
+    transparent 1px 13px
+  );
+}
+
+/* Phones: no pinning — a vertical list beside a vertical ruler. */
+@media (max-width: 767.98px) {
+  .timeline {
+    height: auto;
+    padding: 20px var(--gutter) 96px;
+  }
+
+  .sticky {
+    position: static;
+    height: auto;
+    overflow: visible;
+  }
+
+  .bgYear,
+  .needle {
+    display: none;
+  }
+
+  .header {
+    position: static;
+    margin-bottom: 16px;
+  }
+
+  .track {
+    position: relative;
+    inset: auto;
+    display: block;
+    padding: 0;
+  }
+
+  .track::before {
+    left: 6px;
+    right: auto;
+    top: 0;
+    bottom: 0;
+    width: 14px;
+    height: auto;
+    background: repeating-linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.45) 0 1px,
+      transparent 1px 13px
+    );
+  }
+}

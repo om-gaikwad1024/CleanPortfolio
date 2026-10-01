@@ -102,15 +102,31 @@ export interface EntrySettings {
     enterFrom?: string
 }
 
+export interface FocusLayout {
+    /** Settle centred, against the left edge, or against the top edge. */
+    align?: "center" | "left" | "top"
+    /** Zoom of the focused card, before the max-size limits. */
+    scale?: number
+    /** Gap (px) to the edge it aligns to. */
+    margin?: number
+    /** Size limits as a share of the screen. */
+    maxWidth?: number
+    maxHeight?: number
+}
+
 export interface InteractionSettings {
     wheel?: boolean
     drag?: boolean
     clickToFocus?: boolean
     focusTransition?: FramerTransition
+    /** Where a clicked card settles while focused (default: centred, 1.18×). */
+    focusLayout?: FocusLayout
 }
 
 export interface CarouselSettings {
     items?: ItemValue[]
+    /** Item index centred at start. */
+    startIndex?: number
     background?: string
     sizeMode?: string
     cardWidth?: number
@@ -159,6 +175,7 @@ export function makeParams(p: CarouselSettings) {
 
     return {
         itemOffsets: (p.items ?? []).filter(Boolean).map(offsetOf),
+        startIndex: Math.round(p.startIndex ?? 0),
         panelH: clamp(p.cardHeight ?? p.panelHeight ?? 450, 60, 1200),
         cardW: clamp(p.cardWidth ?? 340, 40, 1600),
         sizeMode: SIZE_MODES[p.sizeMode ?? "same"] ? p.sizeMode ?? "same" : "same",
@@ -190,7 +207,13 @@ export function makeParams(p: CarouselSettings) {
             focusDuration: 0.9 * fs,
             stagger: 0.06 * fs,
             dropDist: 1.4,
-            centerScale: 1.18,
+            layout: {
+                align: it.focusLayout?.align ?? "center",
+                scale: clamp(it.focusLayout?.scale ?? 1.18, 0.3, 3),
+                margin: Math.max(0, it.focusLayout?.margin ?? 0),
+                maxWidth: clamp(it.focusLayout?.maxWidth ?? 10, 0.1, 10),
+                maxHeight: clamp(it.focusLayout?.maxHeight ?? 10, 0.1, 10),
+            },
             lensFade: 0.85 * fs,
             ease: ft.ease,
         },
@@ -322,6 +345,8 @@ interface PanelRect {
 
 export interface EngineHooks {
     onEntryComplete?: () => void
+    /** A card was focused (its item index) or the focus closed (null). */
+    onFocusChange?: (index: number | null) => void
 }
 
 export function createEngine(
@@ -489,7 +514,8 @@ export function createEngine(
         poolIdx: -1,
         lensFx: 1,
     }
-    const focusZoom = { v: 1 }
+    // Focus progress: 0 = in the row, 1 = settled in its focus spot.
+    const focusT = { v: 0 }
     let drop: number[] = []
     let pEntry: number[] = []
     let growArr: number[] = []
@@ -741,9 +767,9 @@ export function createEngine(
         focusState.srcIndex = -1
         focusState.poolIdx = -1
         focusState.lensFx = 1
-        focusZoom.v = 1
+        focusT.v = 0
         velocity = 0
-        scroll = centerForIndex(0)
+        scroll = centerForIndex(pp.startIndex)
         target = scroll
         prevScroll = scroll
 
@@ -849,39 +875,50 @@ export function createEngine(
             const d = drop[poolIdx] || 0
             let drawW = wPx
             let drawH = h
+            let focusOffX = 0
             if (isFocused) {
-                drawW = wPx * focusZoom.v
-                drawH = h * focusZoom.v
+                const FL = pp.focus.layout
+                const t = focusT.v
+                const fit = Math.min(
+                    FL.scale,
+                    (FL.maxWidth * W) / wPx,
+                    (FL.maxHeight * H) / h
+                )
+                const s = 1 + (fit - 1) * t
+                drawW = wPx * s
+                drawH = h * s
+                if (FL.align === "left")
+                    focusOffX = (-W / 2 + FL.margin + (wPx * fit) / 2 - centerX) * t
+                else if (FL.align === "top")
+                    y += (H / 2 - FL.margin - (h * fit) / 2) * t
             } else if (d > 0) {
                 y -= d * H * pp.focus.dropDist
             }
 
             p.mesh.visible = true
 
-            let finalX = centerX
+            let finalX = centerX + focusOffX
             let finalY = y
             let finalW = drawW
             let finalH = drawH
 
             if (inEntry) {
                 const pe = pEntry[poolIdx] || 0
-                const g = growArr[poolIdx] || 0
+                const midRep = Math.floor(REPEATS / 2)
+                // All loop copies of a card share its growth, so the intro row
+                // fills the screen edge to edge (not just one copy of the set).
+                const g = growArr[midRep * N + i] || 0
 
                 const startH = Math.min(E.startH, panelH * 0.5)
                 const curH = startH + (drawH - startH) * g
                 finalH = curH
                 finalW = widthAt(i, curH)
 
-                const midRep = Math.floor(REPEATS / 2)
-                if (rep !== midRep) {
-                    p.mesh.visible = false
-                    lastCenterX[poolIdx] = undefined
-                    return
-                }
                 const cSrc = centerIndex(scroll)
                 let di = i - cSrc
                 if (di > N / 2) di -= N
                 if (di < -N / 2) di += N
+                di += (rep - midRep) * N
                 const slotH = (s: number) => {
                     const gg = growArr[midRep * N + s] || 0
                     return startH + (cardHeight(s) - startH) * gg
@@ -923,7 +960,7 @@ export function createEngine(
             p.mesh.position.set(finalX, finalY, 0)
             p.mesh.scale.set(Math.max(1, finalW), Math.max(1, finalH), 1)
 
-            const sx = centerX + W / 2
+            const sx = centerX + focusOffX + W / 2
             const sy = H / 2 - y
             panelRects.push({
                 left: sx - drawW / 2,
@@ -1184,18 +1221,20 @@ export function createEngine(
         if (focusTl) focusTl.kill()
         const tl = new Timeline()
         tl.to(focusState as unknown as NumBag, "lensFx", 0, F.lensFade, OUT3, 0)
-        tl.to(focusZoom, "v", F.centerScale, F.focusDuration, F.ease, 0)
+        tl.to(focusT, "v", 1, F.focusDuration, F.ease, 0)
         ranked.forEach((o) => {
             tl.to(bag(drop), o.idx, 1, F.cardDuration, F.ease, o.rank * F.stagger)
         })
         focusTl = tl
 
         updateCursor()
+        getHooks().onFocusChange?.(panel.srcIndex)
     }
 
     function closeFocus() {
         if (!focusState.active || closing) return
         closing = true
+        getHooks().onFocusChange?.(null)
         const F = pp.focus
         if (focusTl) focusTl.kill()
 
@@ -1223,7 +1262,7 @@ export function createEngine(
             INOUT3,
             0
         )
-        tl.to(focusZoom, "v", 1, F.focusDuration * 0.85, F.ease, 0)
+        tl.to(focusT, "v", 0, F.focusDuration * 0.85, F.ease, 0)
         let end = Math.max(F.lensFade * 0.8, F.focusDuration * 0.85)
         ranked.forEach((o) => {
             const at = o.rank * F.stagger * 0.7
@@ -1425,6 +1464,21 @@ export function createEngine(
         step(dt)
     }
 
+    // Glide to a (fractional) item position, e.g. driven by page scroll.
+    // Ignored during the intro; closes an open card first.
+    function driveTo(position: number) {
+        if (!ready || entryActive || entrySettled) return
+        if (focusState.active) closeFocus()
+        const base = Math.floor(position)
+        const a = centerForIndex(base)
+        const b = centerForIndex(base + 1)
+        target = a + (b - a) * (position - base)
+        velocity = 0
+        pendingFocus = null
+        snapped = true
+        lastInput = performance.now()
+    }
+
     // Stops/starts the render loop (e.g. while the carousel is off-screen).
     let active = true
     function setActive(on: boolean) {
@@ -1506,7 +1560,7 @@ export function createEngine(
         if (el.parentNode) el.parentNode.removeChild(el)
     }
 
-    return { setItems, closeFocus, replayEntry: playEntry, play, setActive, frame, destroy }
+    return { setItems, closeFocus, replayEntry: playEntry, play, driveTo, setActive, frame, destroy }
 }
 
 export type Engine = ReturnType<typeof createEngine>

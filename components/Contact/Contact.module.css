@@ -1,0 +1,131 @@
+.contact {
+  position: relative;
+  z-index: var(--z-content);
+  min-height: 100svh;
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  background: var(--color-bg);
+  color: var(--color-fg);
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  padding: calc(var(--nav-h) + 40px) var(--gutter) 80px;
+}
+
+.pill {
+  padding: 6px 18px;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 999px;
+  font-size: 14px;
+  line-height: 1.2;
+}
+
+.heading {
+  margin-top: 28px;
+  font-size: clamp(48px, 6.4vw, 112px);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+.line {
+  display: block;
+}
+
+.script {
+  font-family: var(--font-script);
+  font-size: 1.2em;
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 0.8;
+  text-shadow: 0 0 18px rgba(255, 255, 255, 0.35);
+}
+
+.intro {
+  margin-top: 28px;
+  max-width: 36ch;
+  color: rgba(255, 255, 255, 0.68);
+  font-size: 18px;
+  line-height: 1.5;
+}
+
+.email {
+  margin-top: 44px;
+}
+
+.links {
+  margin-top: 28px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+/* Dithered character; full height of the section. */
+.art {
+  position: relative;
+  height: 100svh;
+}
+
+.hint {
+  position: absolute;
+  right: var(--gutter);
+  bottom: 40px;
+  color: var(--color-muted);
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  pointer-events: none;
+}
+
+/* Content rises in as the section scrolls into view (no JS; browsers without
+   scroll-driven animations just show it). */
+@supports (animation-timeline: view()) {
+  .reveal {
+    animation: rise linear both;
+    animation-timeline: view();
+    animation-range: entry calc(10% + var(--i) * 6%) entry calc(60% + var(--i) * 6%);
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    translate: 0 40px;
+    filter: blur(6px);
+  }
+}
+
+/* Narrower screens: art on top, text underneath. */
+@media (max-width: 1023.98px) {
+  .contact {
+    grid-template-columns: 1fr;
+  }
+
+  .art {
+    order: -1;
+    height: 52svh;
+  }
+
+  .hint {
+    bottom: 16px;
+  }
+
+  .content {
+    padding: 8px var(--gutter) 72px;
+  }
+}
+
+@media (max-width: 768px) {
+  .pill {
+    padding: 4px 12px;
+    font-size: 12px;
+  }
+
+  .intro {
+    font-size: 16px;
+  }
+}

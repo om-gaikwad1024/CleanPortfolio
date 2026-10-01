@@ -30,6 +30,13 @@
   cursor: pointer;
 }
 
+/* Outline variant: transparent pill with a light border. */
+.outline {
+  --ab-bg: transparent;
+  --ab-fg: var(--color-fg);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
 .fill {
   position: absolute;
   top: var(--ab-gap);

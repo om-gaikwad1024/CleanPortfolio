@@ -1,0 +1,166 @@
+/* Wide screens (≥1100px): the opened card sits in the left half (see
+   focusLayouts in content/portfolio.ts), so the panel takes the right half. */
+.panel {
+  position: absolute;
+  z-index: 2;
+  top: 50%;
+  left: calc(50% + 88px);
+  right: var(--gutter);
+  max-width: 520px;
+  translate: 0 -50%;
+  color: var(--color-fg);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity 0.3s ease,
+    visibility 0s linear 0.3s;
+}
+
+/* Appears once the card has settled; content rises in line by line. */
+.open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transition: opacity 0.4s ease 0.35s;
+}
+
+.open .item {
+  animation: rise 0.7s var(--ease-out) calc(0.4s + var(--i) * 0.07s) backwards;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    translate: 0 14px;
+    filter: blur(4px);
+  }
+}
+
+.close {
+  position: absolute;
+  top: -4px;
+  right: 0;
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 50%;
+  background: transparent;
+  color: inherit;
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    background 0.3s ease,
+    rotate 0.3s ease;
+}
+
+.close:hover {
+  background: rgba(255, 255, 255, 0.1);
+  rotate: 90deg;
+}
+
+.close:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+}
+
+.count {
+  color: var(--color-muted);
+  font-size: 13px;
+  letter-spacing: 0.12em;
+}
+
+.title {
+  margin-top: 14px;
+  padding-right: 56px; /* clear the close button */
+  font-size: clamp(30px, 2.8vw, 48px);
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  outline: none;
+}
+
+.description {
+  margin-top: 18px;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 16px;
+  line-height: 1.55;
+}
+
+.stack {
+  margin-top: 22px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  list-style: none;
+}
+
+.chip {
+  padding: 5px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 999px;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.links {
+  margin-top: 30px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+/* Narrower screens: the opened card sits at the top (100px margin) and the
+   panel goes underneath. The card's height is the smallest of its limits in
+   focusLayouts.stacked: 36svh, 90% of the width at 16:10 (56.25vw), or its
+   zoomed size (1.1 × cardHeight). */
+@media (max-width: 1099.98px) {
+  .panel {
+    --card-h: min(36svh, 56.25vw, 440px);
+    top: calc(100px + var(--card-h) + 28px);
+    left: var(--gutter);
+    right: var(--gutter);
+    max-width: 640px;
+    margin-inline: auto;
+    translate: none;
+  }
+
+  .title {
+    margin-top: 8px;
+    font-size: clamp(24px, 5vw, 36px);
+  }
+
+  .description {
+    margin-top: 12px;
+    font-size: 14px;
+  }
+
+  .stack {
+    margin-top: 14px;
+  }
+
+  .links {
+    margin-top: 20px;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .panel {
+    --card-h: min(36svh, 56.25vw, 220px);
+  }
+
+  .close {
+    width: 34px;
+    height: 34px;
+    font-size: 19px;
+  }
+
+  .chip {
+    padding: 4px 10px;
+    font-size: 11px;
+  }
+}

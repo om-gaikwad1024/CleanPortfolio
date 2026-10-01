@@ -1,0 +1,49 @@
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px 18px;
+}
+
+/* Underline draws in from the left on hover. */
+.email {
+  color: inherit;
+  font-size: clamp(24px, 2.6vw, 42px);
+  letter-spacing: -0.02em;
+  text-decoration: none;
+  background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat;
+  padding-bottom: 4px;
+  transition: background-size 0.5s var(--ease-out);
+  overflow-wrap: anywhere;
+}
+
+.email:hover,
+.email:focus-visible {
+  background-size: 100% 1px;
+}
+
+.copy {
+  padding: 6px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--color-muted);
+  font: inherit;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    color 0.3s ease,
+    border-color 0.3s ease;
+}
+
+.copy:hover {
+  color: var(--color-fg);
+  border-color: var(--color-fg);
+}
+
+.copy:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+}

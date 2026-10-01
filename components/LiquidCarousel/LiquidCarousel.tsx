@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, type CSSProperties } from "react";
+import { useEffect, useMemo, useRef, type CSSProperties, type RefObject } from "react";
 import {
   createEngine,
   imageOf,
@@ -14,12 +14,24 @@ import {
 import { markReady } from "@/lib/loading";
 import styles from "./LiquidCarousel.module.css";
 
+/** Imperative handle for driving the carousel from outside (e.g. page scroll). */
+export type CarouselControl = {
+  /** Glide to a fractional item position. */
+  driveTo: (position: number) => void;
+  closeFocus: () => void;
+};
+
 export type LiquidCarouselProps = CarouselSettings & {
   /** Plays the intro (rise → arrange → zoom) once true; cards wait hidden until then. */
   play?: boolean;
   /** Runs the render loop; turn off while the carousel is off-screen. */
   active?: boolean;
   onEntryComplete?: () => void;
+  /** A card was focused (its item index) or the focus closed (null). */
+  onFocusChange?: (index: number | null) => void;
+  /** Bump this number to close the focused card from outside. */
+  closeRequest?: number;
+  controlRef?: RefObject<CarouselControl | null>;
   style?: CSSProperties;
 };
 
@@ -28,6 +40,9 @@ export default function LiquidCarousel({
   play = true,
   active = true,
   onEntryComplete,
+  onFocusChange,
+  closeRequest = 0,
+  controlRef,
   style,
   ...settings
 }: LiquidCarouselProps) {
@@ -36,10 +51,10 @@ export default function LiquidCarousel({
 
   // Latest settings / callbacks, read by the engine every frame.
   const paramsRef = useRef(makeParams(settings));
-  const hooksRef = useRef<EngineHooks>({ onEntryComplete });
+  const hooksRef = useRef<EngineHooks>({ onEntryComplete, onFocusChange });
   useEffect(() => {
     paramsRef.current = makeParams(settings);
-    hooksRef.current = { onEntryComplete };
+    hooksRef.current = { onEntryComplete, onFocusChange };
   });
 
   // Only reload textures when the image list actually changes.
@@ -83,6 +98,21 @@ export default function LiquidCarousel({
   useEffect(() => {
     engineRef.current?.setActive(active);
   }, [active]);
+
+  useEffect(() => {
+    if (closeRequest) engineRef.current?.closeFocus();
+  }, [closeRequest]);
+
+  useEffect(() => {
+    if (!controlRef) return;
+    controlRef.current = {
+      driveTo: (position) => engineRef.current?.driveTo(position),
+      closeFocus: () => engineRef.current?.closeFocus(),
+    };
+    return () => {
+      controlRef.current = null;
+    };
+  }, [controlRef]);
 
   return (
     <div

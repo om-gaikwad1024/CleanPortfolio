@@ -6,9 +6,10 @@
 - Next.js App Router + TypeScript. Deployed on Vercel; `npm run lint` and `npm run build` must pass.
 - Styling: plain CSS Modules, one `.module.css` per component. Shared variables/reset only in `app/globals.css`.
 - Every visual piece is its own component in `components/<Name>/`.
-- Text and settings (nav, hero copy, services, about text, orb config) live in `content/`, never hardcoded in components.
+- Text and settings (nav, hero copy, services, about text, orb config, projects, carousel, experience, contact) live in `content/`, never hardcoded in components. Projects: `content/projects.ts` (image N = `public/portN.png`).
 - Orb shader lives in `components/LiquidOrb/shader.ts`. Don't open it unless the task is about the orb.
 - Carousel engine/shader (`components/LiquidCarousel/engine.ts`, `lens.shader.ts`): don't open unless the task is about the carousel. Source reference: `legacy/carousel.txt`.
+- Dither shader (`components/DitherReveal/dither.shader.ts`, from `legacy/dither.txt`): don't open unless the task is about the dither effect.
 - `legacy/index.html` is the visual/behaviour reference; the new site must match it. Only read the part relevant to the current phase, never the whole file.
 - Work one phase at a time, then stop. Tick the phase below and give a commit message; the user commits manually.
 - Keep this file short.
@@ -27,3 +28,8 @@
 - [x] 11. Liquid Glass Carousel portfolio (intro plays when in view; wheel scrolls page, drag spins)
 - [x] 12. Landscape carousel cards, no lens edge glow, hero load-in micro-animations
 - [x] 13. Scroll-linked fade to black into Portfolio
+- [x] 14. Project details panel for the opened carousel card (side layout ≥1100px, stacked below)
+- [x] 15. Experience: scroll-through ruler timeline
+- [x] 16. No scrollbar, page held until the carousel intro ends, smoother timeline
+- [x] 17. Contact section with dither reveal art
+- [x] 18. Red accent, scroll-driven pinned portfolio (all projects, opposite direction to timeline), full-width intro row, contact art + no footer

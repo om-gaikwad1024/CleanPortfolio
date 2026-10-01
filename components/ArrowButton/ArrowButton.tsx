@@ -1,8 +1,10 @@
 import type { ComponentPropsWithoutRef } from "react";
+import ScrollLink from "@/components/SmoothScroll/ScrollLink";
 import styles from "./ArrowButton.module.css";
 
-type AnchorProps = ComponentPropsWithoutRef<"a"> & { href: string };
-type ButtonProps = ComponentPropsWithoutRef<"button"> & { href?: undefined };
+type Variant = { variant?: "solid" | "outline" };
+type AnchorProps = ComponentPropsWithoutRef<"a"> & Variant & { href: string };
+type ButtonProps = ComponentPropsWithoutRef<"button"> & Variant & { href?: undefined };
 export type ArrowButtonProps = AnchorProps | ButtonProps;
 
 function Fill() {
@@ -23,24 +25,29 @@ function Fill() {
   );
 }
 
-const withRoot = (className?: string) =>
-  className ? `${styles.root} ${className}` : styles.root;
+const withRoot = (variant: Variant["variant"], className?: string) =>
+  [styles.root, variant === "outline" && styles.outline, className]
+    .filter(Boolean)
+    .join(" ");
 
-// Pill button whose accent dot expands on hover. Renders <a> when given href, otherwise <button>.
+// Pill button whose accent dot expands on hover. Renders a link when given
+// href (smooth-scrolling for #anchors), otherwise <button>.
 export default function ArrowButton(props: ArrowButtonProps) {
   if (props.href !== undefined) {
-    const { className, children, ...rest } = props;
+    const { className, children, variant, ...rest } = props;
+    // In-page links (#section) scroll smoothly through Lenis.
+    const Link = rest.href.startsWith("#") ? ScrollLink : "a";
     return (
-      <a className={withRoot(className)} {...rest}>
+      <Link className={withRoot(variant, className)} {...rest}>
         <Fill />
         {children}
-      </a>
+      </Link>
     );
   }
 
-  const { className, children, type = "button", ...rest } = props;
+  const { className, children, variant, type = "button", ...rest } = props;
   return (
-    <button type={type} className={withRoot(className)} {...rest}>
+    <button type={type} className={withRoot(variant, className)} {...rest}>
       <Fill />
       {children}
     </button>

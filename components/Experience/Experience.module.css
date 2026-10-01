@@ -1,0 +1,6 @@
+.experience {
+  position: relative;
+  z-index: var(--z-content);
+  background: var(--color-bg);
+  color: var(--color-fg);
+}
