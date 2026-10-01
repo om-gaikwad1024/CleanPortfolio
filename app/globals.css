@@ -20,10 +20,11 @@
   --gutter: 40px;
   --nav-h: 84px; /* fixed navbar height (padding + button) */
 
-  /* Stacking: orb < character < page content < navbar < loader */
+  /* Stacking: orb < character < black backdrop < page content < navbar < loader */
   --z-orb: 1;
   --z-overlay: 2;
-  --z-content: 3;
+  --z-fade: 3;
+  --z-content: 4;
   --z-nav: 10;
   --z-loader: 100;
 }

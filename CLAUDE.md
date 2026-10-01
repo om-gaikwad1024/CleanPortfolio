@@ -26,4 +26,4 @@
 - [x] 10. About text at the top of its pinned screen
 - [x] 11. Liquid Glass Carousel portfolio (intro plays when in view; wheel scrolls page, drag spins)
 - [x] 12. Landscape carousel cards, no lens edge glow, hero load-in micro-animations
-- [ ] 13. Scroll-linked fade to black into Portfolio
+- [x] 13. Scroll-linked fade to black into Portfolio

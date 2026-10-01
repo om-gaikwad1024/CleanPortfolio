@@ -1,4 +1,5 @@
 import About from "@/components/About/About";
+import BackdropFade from "@/components/BackdropFade/BackdropFade";
 import CharacterOverlay from "@/components/CharacterOverlay/CharacterOverlay";
 import Hero from "@/components/Hero/Hero";
 import OrbBackground from "@/components/LiquidOrb/OrbBackground";
@@ -12,6 +13,7 @@ export default function Home() {
       <Navbar />
       <OrbBackground />
       <CharacterOverlay />
+      <BackdropFade targetId="portfolio" />
       <Hero />
       <About />
       <Portfolio />

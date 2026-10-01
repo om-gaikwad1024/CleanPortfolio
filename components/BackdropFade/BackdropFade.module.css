@@ -1,0 +1,9 @@
+.fade {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-fade);
+  background: var(--color-bg);
+  opacity: 0;
+  pointer-events: none;
+  will-change: opacity;
+}

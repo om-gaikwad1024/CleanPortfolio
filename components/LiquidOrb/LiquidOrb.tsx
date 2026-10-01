@@ -30,6 +30,8 @@ export type LiquidOrbProps = OrbSettings & {
   background?: string;
   pointer?: Partial<OrbPointer>;
   style?: CSSProperties;
+  /** Stop rendering (e.g. while fully covered); resumes when false again. */
+  paused?: boolean;
 };
 
 const SPEED_REFERENCE = 50;
@@ -53,10 +55,12 @@ export default function LiquidOrb({
   amplitude = 160,
   pointer,
   style,
+  paused = false,
 }: LiquidOrbProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const resumeRef = useRef<(() => void) | null>(null);
   const ptr: OrbPointer = { ...DEFAULT_POINTER, ...pointer };
-  const live = { orbStyle, tint, core, highlight, speed, ripples, amplitude, ptr };
+  const live = { orbStyle, tint, core, highlight, speed, ripples, amplitude, ptr, paused };
 
   // Latest props for the render loop, which is set up once.
   const liveRef = useRef(live);
@@ -279,13 +283,24 @@ export default function LiquidOrb({
       // A few frames in, the shader is compiled and running smoothly.
       if (++frames === 3) markReady("orb");
 
+      // Sleep while paused (after the warm-up frames); resumeRef wakes it.
+      if (L.paused && frames > 3) {
+        raf = 0;
+        return;
+      }
       raf = requestAnimationFrame(tick);
     };
 
     raf = requestAnimationFrame(tick);
+    resumeRef.current = () => {
+      if (raf) return;
+      last = performance.now();
+      raf = requestAnimationFrame(tick);
+    };
 
     return () => {
       cancelAnimationFrame(raf);
+      resumeRef.current = null;
       ro.disconnect();
       canvas.removeEventListener("pointerdown", onDown);
       canvas.removeEventListener("pointerleave", onLeave);
@@ -294,6 +309,10 @@ export default function LiquidOrb({
       window.removeEventListener("pointercancel", onUp);
     };
   }, []);
+
+  useEffect(() => {
+    if (!paused) resumeRef.current?.();
+  }, [paused]);
 
   return (
     <div className={styles.root} style={{ background, ...style }}>
