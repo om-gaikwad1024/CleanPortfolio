@@ -8,8 +8,6 @@
   align-items: center;
   justify-content: space-between;
   padding: 20px var(--gutter);
-  background: rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(10px);
 }
 
 .logo {
