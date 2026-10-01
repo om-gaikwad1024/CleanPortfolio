@@ -19,5 +19,5 @@
 - [x] 4. LiquidOrb (client-only, `touch-action: pan-y` on canvas)
 - [x] 5. Hero
 - [x] 6. About section with the character lighting
-- [ ] 7. Portfolio placeholder
+- [x] 7. Portfolio placeholder
 - [ ] 8. Lenis smooth scroll (drop `scroll-behavior: smooth`, navbar links scroll via Lenis)

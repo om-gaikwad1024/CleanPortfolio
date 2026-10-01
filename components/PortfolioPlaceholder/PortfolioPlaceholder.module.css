@@ -1,0 +1,18 @@
+.placeholder {
+  position: relative;
+  z-index: var(--z-content);
+  min-height: 100svh;
+  display: flex;
+  align-items: flex-end;
+  padding: 0 var(--gutter) 56px;
+  color: var(--color-fg);
+  font-size: clamp(40px, 6vw, 96px);
+  letter-spacing: -0.02em;
+  pointer-events: none;
+}
+
+@media (max-width: 768px) {
+  .placeholder {
+    padding-bottom: 32px;
+  }
+}
