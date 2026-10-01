@@ -1,0 +1,44 @@
+.meta {
+  position: absolute;
+  left: var(--gutter);
+  bottom: 28px;
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.ticks {
+  position: relative;
+  width: 130px;
+  height: 14px;
+  background: repeating-linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.8) 0 1px,
+    transparent 1px 13px
+  );
+}
+
+.ticks::after {
+  content: "";
+  position: absolute;
+  left: 65px;
+  bottom: 0;
+  width: 1px;
+  height: 48px;
+  background: var(--color-fg);
+}
+
+@media (max-width: 768px) {
+  .meta {
+    bottom: 24px;
+  }
+
+  .ticks {
+    width: 78px;
+  }
+
+  .ticks::after {
+    left: 39px;
+    height: 32px;
+  }
+}

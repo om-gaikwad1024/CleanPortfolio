@@ -1,0 +1,49 @@
+.intro {
+  position: absolute;
+  top: 26%;
+  left: var(--gutter);
+}
+
+.muted {
+  color: var(--color-muted);
+}
+
+.cta {
+  position: relative;
+  display: block;
+  width: 314px;
+  margin-top: 52px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--color-fg);
+  color: inherit;
+  text-decoration: none;
+  pointer-events: auto;
+}
+
+.cta::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 8px;
+  height: 8px;
+  border-top: 1px solid;
+  border-right: 1px solid;
+  transition: translate 0.3s ease;
+}
+
+.cta:hover::after {
+  translate: 3px -3px;
+}
+
+@media (max-width: 768px) {
+  .intro {
+    top: 96px;
+  }
+
+  .cta {
+    width: 200px;
+    margin-top: 24px;
+    padding-bottom: 10px;
+  }
+}

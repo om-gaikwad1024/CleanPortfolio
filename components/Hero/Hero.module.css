@@ -1,0 +1,16 @@
+.hero {
+  position: relative;
+  height: 100svh;
+  z-index: var(--z-content);
+  pointer-events: none; /* orb stays draggable underneath */
+  color: var(--color-fg);
+  font-size: 20px;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+
+@media (max-width: 768px) {
+  .hero {
+    font-size: 15px;
+  }
+}

@@ -67,3 +67,36 @@
     display: none;
   }
 }
+
+/* Small phones: Contact collapses to just the arrow circle so the bar fits.
+   The label stays in the DOM for screen readers. */
+@media (max-width: 429.98px) {
+  .links .cta {
+    width: var(--ab-h);
+    padding: 0;
+  }
+
+  .ctaLabel {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}
+
+/* Very narrow phones (e.g. 320px): tighten type and gaps a touch more. */
+@media (max-width: 359.98px) {
+  .logo {
+    font-size: 16px;
+  }
+
+  .links {
+    gap: 14px;
+  }
+
+  .link {
+    font-size: 11px;
+  }
+}

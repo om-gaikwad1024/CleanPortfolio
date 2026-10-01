@@ -1,0 +1,10 @@
+.plus {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  translate: -50% -50%;
+  opacity: 0.85;
+  background:
+    linear-gradient(#fff, #fff) center / 2px 100% no-repeat,
+    linear-gradient(#fff, #fff) center / 100% 2px no-repeat;
+}

@@ -1,4 +1,5 @@
 import CharacterOverlay from "@/components/CharacterOverlay/CharacterOverlay";
+import Hero from "@/components/Hero/Hero";
 import OrbBackground from "@/components/LiquidOrb/OrbBackground";
 import Navbar from "@/components/Navbar/Navbar";
 import styles from "./page.module.css";
@@ -9,6 +10,7 @@ export default function Home() {
       <Navbar />
       <OrbBackground />
       <CharacterOverlay />
+      <Hero />
     </main>
   );
 }

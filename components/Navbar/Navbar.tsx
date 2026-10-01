@@ -16,7 +16,9 @@ export default function Navbar() {
           </li>
         ))}
         <li>
-          <ArrowButton href={nav.cta.href}>{nav.cta.label}</ArrowButton>
+          <ArrowButton href={nav.cta.href} className={styles.cta}>
+            <span className={styles.ctaLabel}>{nav.cta.label}</span>
+          </ArrowButton>
         </li>
       </ul>
     </nav>

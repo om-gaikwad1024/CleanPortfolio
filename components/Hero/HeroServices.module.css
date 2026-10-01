@@ -1,0 +1,19 @@
+.services {
+  position: absolute;
+  top: 60%;
+  left: 18.5%;
+  list-style: none;
+  line-height: 1.6;
+}
+
+.muted {
+  color: var(--color-muted);
+}
+
+@media (max-width: 768px) {
+  .services {
+    top: auto;
+    bottom: 76px;
+    left: var(--gutter);
+  }
+}
