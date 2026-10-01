@@ -1,0 +1,44 @@
+.portfolio {
+  position: relative;
+  z-index: var(--z-content);
+  height: 100svh;
+  background: var(--color-bg);
+}
+
+/* Soft black lead-in above the section so its top edge never shows as a line. */
+.portfolio::before {
+  content: "";
+  position: absolute;
+  inset: -30svh 0 100%;
+  background: linear-gradient(to bottom, transparent, var(--color-bg));
+  pointer-events: none;
+}
+
+.hint {
+  position: absolute;
+  left: 50%;
+  bottom: 40px;
+  translate: -50% 12px;
+  color: var(--color-muted);
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition:
+    opacity 0.8s ease,
+    translate 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.hint.shown {
+  opacity: 1;
+  translate: -50% 0;
+}
+
+@media (max-width: 768px) {
+  .hint {
+    bottom: 28px;
+    font-size: 11px;
+  }
+}

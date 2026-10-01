@@ -11,6 +11,21 @@
   transform: translate(-50%, -50%);
 }
 
+/* Load-in: the character comes into focus as it settles. */
+@media (prefers-reduced-motion: no-preference) {
+  .overlay {
+    animation: appear 1.6s var(--ease-out) 0.1s backwards;
+  }
+}
+
+@keyframes appear {
+  from {
+    opacity: 0;
+    scale: 1.04;
+    filter: blur(10px);
+  }
+}
+
 /* Matches the legacy `innerWidth < 768` switch. */
 @media (max-width: 767.98px) {
   .overlay {

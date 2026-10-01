@@ -7,9 +7,9 @@ export default function HeroMeta() {
 
   return (
     <div className={styles.meta}>
-      <span>{year}</span>
+      <span className={styles.year}>{year}</span>
       <span className={styles.ticks} aria-hidden="true" />
-      <span>{time}</span>
+      <span className={styles.time}>{time}</span>
     </div>
   );
 }

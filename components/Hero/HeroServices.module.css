@@ -10,6 +10,21 @@
   color: var(--color-muted);
 }
 
+/* Load-in: items slide in from the left in turn. */
+@media (prefers-reduced-motion: no-preference) {
+  .item {
+    animation: slide 0.8s var(--ease-out) calc(0.9s + var(--i) * 0.1s) backwards;
+  }
+}
+
+@keyframes slide {
+  from {
+    opacity: 0;
+    translate: -16px 0;
+    filter: blur(4px);
+  }
+}
+
 @media (max-width: 768px) {
   .services {
     top: auto;

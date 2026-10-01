@@ -44,6 +44,24 @@
   margin-right: 8px;
 }
 
+/* Load-in: logo, then each link, drop in from above. */
+@media (prefers-reduced-motion: no-preference) {
+  .logo {
+    animation: drop 0.7s var(--ease-out) 0.1s backwards;
+  }
+
+  .item {
+    animation: drop 0.7s var(--ease-out) calc(0.2s + var(--i) * 0.07s) backwards;
+  }
+}
+
+@keyframes drop {
+  from {
+    opacity: 0;
+    translate: 0 -10px;
+  }
+}
+
 @media (max-width: 768px) {
   .navbar {
     padding: 16px var(--gutter);

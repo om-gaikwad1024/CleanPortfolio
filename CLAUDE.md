@@ -8,6 +8,7 @@
 - Every visual piece is its own component in `components/<Name>/`.
 - Text and settings (nav, hero copy, services, about text, orb config) live in `content/`, never hardcoded in components.
 - Orb shader lives in `components/LiquidOrb/shader.ts`. Don't open it unless the task is about the orb.
+- Carousel engine/shader (`components/LiquidCarousel/engine.ts`, `lens.shader.ts`): don't open unless the task is about the carousel. Source reference: `legacy/carousel.txt`.
 - `legacy/index.html` is the visual/behaviour reference; the new site must match it. Only read the part relevant to the current phase, never the whole file.
 - Work one phase at a time, then stop. Tick the phase below and give a commit message; the user commits manually.
 - Keep this file short.
@@ -23,5 +24,6 @@
 - [x] 8. Lenis smooth scroll (drop `scroll-behavior: smooth`, navbar links scroll via Lenis)
 - [x] 9. Navbar without background
 - [x] 10. About text at the top of its pinned screen
-- [ ] 11. Liquid Glass Carousel portfolio (intro plays when in view; wheel scrolls page, drag spins)
-- [ ] 12. Scroll-linked fade to black into Portfolio
+- [x] 11. Liquid Glass Carousel portfolio (intro plays when in view; wheel scrolls page, drag spins)
+- [x] 12. Landscape carousel cards, no lens edge glow, hero load-in micro-animations
+- [ ] 13. Scroll-linked fade to black into Portfolio

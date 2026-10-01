@@ -12,6 +12,10 @@
     Ubuntu, Cantarell, sans-serif;
   --font-script: var(--font-allison), cursive;
 
+  /* Motion */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+
   /* Layout */
   --gutter: 40px;
   --nav-h: 84px; /* fixed navbar height (padding + button) */

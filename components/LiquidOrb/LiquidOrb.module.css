@@ -16,3 +16,16 @@
   cursor: grab;
   z-index: 1;
 }
+
+/* Load-in: the orb fades up once WebGL is running. */
+@media (prefers-reduced-motion: no-preference) {
+  .root {
+    animation: fade-in 1.6s ease backwards;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}

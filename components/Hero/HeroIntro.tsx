@@ -1,7 +1,9 @@
-import { Fragment } from "react";
+import { Fragment, type CSSProperties } from "react";
 import ScrollLink from "@/components/SmoothScroll/ScrollLink";
 import { hero } from "@/content/hero";
 import styles from "./HeroIntro.module.css";
+
+const order = (i: number) => ({ "--i": i }) as CSSProperties;
 
 // Opening lines and the "Explore Now" link, top left.
 export default function HeroIntro() {
@@ -11,7 +13,7 @@ export default function HeroIntro() {
     <div className={styles.intro}>
       <p>
         {intro.lines.map((line, i) => (
-          <Fragment key={i}>
+          <span key={i} className={styles.line} style={order(i)}>
             {line.map((seg, j) =>
               typeof seg === "string" ? (
                 <Fragment key={j}>{seg}</Fragment>
@@ -21,10 +23,14 @@ export default function HeroIntro() {
                 </span>
               ),
             )}
-            <br />
-          </Fragment>
+          </span>
         ))}
-        <span className={styles.muted}>{intro.muted}</span>
+        <span
+          className={`${styles.line} ${styles.muted}`}
+          style={order(intro.lines.length)}
+        >
+          {intro.muted}
+        </span>
       </p>
       <ScrollLink href={cta.href} className={styles.cta}>
         {cta.label}

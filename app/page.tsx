@@ -3,7 +3,7 @@ import CharacterOverlay from "@/components/CharacterOverlay/CharacterOverlay";
 import Hero from "@/components/Hero/Hero";
 import OrbBackground from "@/components/LiquidOrb/OrbBackground";
 import Navbar from "@/components/Navbar/Navbar";
-import PortfolioPlaceholder from "@/components/PortfolioPlaceholder/PortfolioPlaceholder";
+import Portfolio from "@/components/Portfolio/Portfolio";
 import styles from "./page.module.css";
 
 export default function Home() {
@@ -14,7 +14,7 @@ export default function Home() {
       <CharacterOverlay />
       <Hero />
       <About />
-      <PortfolioPlaceholder />
+      <Portfolio />
     </main>
   );
 }
