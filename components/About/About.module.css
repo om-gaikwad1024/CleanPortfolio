@@ -12,22 +12,24 @@
   top: 0;
   height: 100svh;
   display: flex;
-  align-items: flex-end;
-  padding: 0 var(--gutter) 56px;
+  align-items: flex-start;
+  padding: calc(var(--nav-h) + 32px) var(--gutter) 0;
 }
 
-/* Dark fade behind the text. It runs 50svh below the screen so it
-   trails off softly instead of leaving a hard edge as the section exits. */
+/* Dark fade behind the text, pinned to the top of the screen. Its strength
+   (--fade, set on scroll) rises as the section arrives and drops as it
+   leaves, so it never shows a hard edge over the hero or the next section. */
 .sticky::before {
   content: "";
-  position: absolute;
-  inset: 40% 0 -50svh;
+  position: fixed;
+  inset: 0 0 auto;
+  height: 70svh;
   z-index: -1;
+  opacity: var(--fade, 0);
   background: linear-gradient(
     to bottom,
-    transparent,
-    rgba(0, 0, 0, 0.6) 25%,
-    rgba(0, 0, 0, 0.9) 55%,
+    rgba(0, 0, 0, 0.9),
+    rgba(0, 0, 0, 0.6) 45%,
     transparent
   );
 }
@@ -83,7 +85,7 @@
 
 @media (max-width: 768px) {
   .sticky {
-    padding-bottom: 32px;
+    padding-top: calc(var(--nav-h) + 18px);
   }
 
   .content {

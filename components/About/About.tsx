@@ -37,11 +37,17 @@ export default function About() {
 
     const update = () => {
       raf = 0;
-      const top = section.getBoundingClientRect().top;
+      const { top, bottom } = section.getBoundingClientRect();
       const run = section.offsetHeight - sticky.offsetHeight;
       const p = run > 0 ? clamp(-top / run, 0, 1) : 1;
       const lit = Math.min(p / lightEnd, 1) * total;
       textEl.style.setProperty("--lit", lit.toFixed(2));
+
+      // Backdrop fade: ramps in over the screen-height the section enters on,
+      // and out over the one it leaves on.
+      const vh = window.innerHeight;
+      const fade = Math.min(clamp((vh - top) / vh, 0, 1), clamp(bottom / vh, 0, 1));
+      sticky.style.setProperty("--fade", fade.toFixed(3));
     };
     const onScroll = () => {
       if (!raf) raf = requestAnimationFrame(update);

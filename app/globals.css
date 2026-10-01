@@ -14,6 +14,7 @@
 
   /* Layout */
   --gutter: 40px;
+  --nav-h: 84px; /* fixed navbar height (padding + button) */
 
   /* Stacking: orb < character < page content < navbar */
   --z-orb: 1;
@@ -25,6 +26,7 @@
 @media (max-width: 768px) {
   :root {
     --gutter: 24px;
+    --nav-h: 70px;
   }
 }
 

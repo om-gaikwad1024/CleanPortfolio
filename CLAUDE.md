@@ -22,6 +22,6 @@
 - [x] 7. Portfolio placeholder
 - [x] 8. Lenis smooth scroll (drop `scroll-behavior: smooth`, navbar links scroll via Lenis)
 - [x] 9. Navbar without background
-- [ ] 10. About text at the top of its pinned screen
+- [x] 10. About text at the top of its pinned screen
 - [ ] 11. Liquid Glass Carousel portfolio (intro plays when in view; wheel scrolls page, drag spins)
 - [ ] 12. Scroll-linked fade to black into Portfolio
