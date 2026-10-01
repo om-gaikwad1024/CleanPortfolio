@@ -20,4 +20,4 @@
 - [x] 5. Hero
 - [x] 6. About section with the character lighting
 - [x] 7. Portfolio placeholder
-- [ ] 8. Lenis smooth scroll (drop `scroll-behavior: smooth`, navbar links scroll via Lenis)
+- [x] 8. Lenis smooth scroll (drop `scroll-behavior: smooth`, navbar links scroll via Lenis)

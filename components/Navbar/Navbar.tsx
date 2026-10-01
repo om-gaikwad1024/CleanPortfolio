@@ -1,4 +1,5 @@
 import ArrowButton from "@/components/ArrowButton/ArrowButton";
+import ScrollLink from "@/components/SmoothScroll/ScrollLink";
 import { nav } from "@/content/nav";
 import styles from "./Navbar.module.css";
 
@@ -9,10 +10,10 @@ export default function Navbar() {
       <ul className={styles.links}>
         {nav.links.map((link) => (
           <li key={link.href}>
-            <a href={link.href} className={styles.link}>
+            <ScrollLink href={link.href} className={styles.link}>
               <span className={styles.number}>{link.number}</span>
               {link.label}
-            </a>
+            </ScrollLink>
           </li>
         ))}
         <li>

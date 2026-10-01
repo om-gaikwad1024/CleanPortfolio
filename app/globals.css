@@ -34,11 +34,6 @@
   box-sizing: border-box;
 }
 
-/* Removed in phase 8 when Lenis takes over scrolling. */
-html {
-  scroll-behavior: smooth;
-}
-
 body {
   background: var(--color-bg);
   font-family: var(--font-sans);

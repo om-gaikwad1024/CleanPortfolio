@@ -1,4 +1,5 @@
 import { Fragment } from "react";
+import ScrollLink from "@/components/SmoothScroll/ScrollLink";
 import { hero } from "@/content/hero";
 import styles from "./HeroIntro.module.css";
 
@@ -25,9 +26,9 @@ export default function HeroIntro() {
         ))}
         <span className={styles.muted}>{intro.muted}</span>
       </p>
-      <a href={cta.href} className={styles.cta}>
+      <ScrollLink href={cta.href} className={styles.cta}>
         {cta.label}
-      </a>
+      </ScrollLink>
     </div>
   );
 }

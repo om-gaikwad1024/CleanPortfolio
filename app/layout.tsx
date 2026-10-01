@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Allison } from "next/font/google";
+import SmoothScroll from "@/components/SmoothScroll/SmoothScroll";
 import "./globals.css";
 
 // Script face for the hero signature, exposed as --font-allison.
@@ -16,7 +17,9 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={allison.variable}>
-      <body>{children}</body>
+      <body>
+        <SmoothScroll>{children}</SmoothScroll>
+      </body>
     </html>
   );
 }
