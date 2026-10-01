@@ -1,0 +1,22 @@
+.overlay {
+  position: fixed;
+  z-index: var(--z-overlay);
+  pointer-events: none;
+  width: auto;
+  height: auto;
+  top: var(--top);
+  left: var(--left);
+  max-width: var(--max-w);
+  max-height: var(--max-h);
+  transform: translate(-50%, -50%);
+}
+
+/* Matches the legacy `innerWidth < 768` switch. */
+@media (max-width: 767.98px) {
+  .overlay {
+    top: var(--top-m);
+    left: var(--left-m);
+    max-width: var(--max-w-m);
+    max-height: var(--max-h-m);
+  }
+}

@@ -1,0 +1,72 @@
+/* Tweak via custom properties, e.g. <ArrowButton style={{ "--ab-accent": "#ff3a32" }}> */
+.root {
+  --ab-h: 44px; /* total button height */
+  --ab-gap: 4px; /* space between circle and pill edge */
+  --ab-border: 1px;
+  --ab-bg: #ffffff;
+  --ab-fg: #000000;
+  --ab-accent: var(--color-accent);
+  --ab-icon: #ffffff;
+  --ab-dot: calc(var(--ab-h) - 2 * (var(--ab-border) + var(--ab-gap)));
+
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  height: var(--ab-h);
+  padding: 0 1.6em 0 calc(var(--ab-h) + 0.9em);
+  border: var(--ab-border) solid var(--ab-bg);
+  border-radius: 999px;
+  background: var(--ab-bg);
+  color: var(--ab-fg);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.fill {
+  position: absolute;
+  top: var(--ab-gap);
+  bottom: var(--ab-gap);
+  left: var(--ab-gap);
+  width: var(--ab-dot);
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  background: var(--ab-accent);
+  color: var(--ab-icon);
+  transition-property: top, bottom, left, width;
+  transition-duration: 0.7s;
+  transition-timing-function: cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.root:hover .fill,
+.root:focus-visible .fill {
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+}
+
+.root:focus-visible {
+  outline: 2px solid var(--ab-accent);
+  outline-offset: 3px;
+}
+
+.icon {
+  width: 18px;
+  height: 18px;
+}
+
+@media (max-width: 768px) {
+  .root {
+    --ab-h: 38px;
+    font-size: 12px;
+  }
+}

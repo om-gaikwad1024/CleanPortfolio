@@ -15,8 +15,8 @@
 ## Phases
 - [x] 1. Scaffold the project
 - [x] 2. Global styles and fonts
-- [ ] 3. Navbar and ArrowButton
-- [ ] 4. LiquidOrb (client-only, `touch-action: pan-y` on canvas)
+- [x] 3. Navbar and ArrowButton
+- [x] 4. LiquidOrb (client-only, `touch-action: pan-y` on canvas)
 - [ ] 5. Hero
 - [ ] 6. About section with the character lighting
 - [ ] 7. Portfolio placeholder

@@ -6,6 +6,12 @@
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "dev"],
       "port": 3000
+    },
+    {
+      "name": "legacy",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["-m", "http.server", "4000", "--directory", "legacy"],
+      "port": 4000
     }
   ]
 }
