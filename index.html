@@ -1,0 +1,1376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OMMM - Liquid Orb</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Allison&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+                html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background: #000;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+        
+        #root {
+            width: 100%;
+            height: 100%;
+        }
+        
+                .container {
+            position: relative;
+        }
+        
+               .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 40px;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+        }
+        
+        .navbar-logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: #ffffff;
+            letter-spacing: 2px;
+        }
+        
+        .navbar-links {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+            list-style: none;
+        }
+        
+        .navbar-link {
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 400;
+            letter-spacing: 0.5px;
+            transition: opacity 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .navbar-link:hover {
+            opacity: 0.7;
+        }
+        
+        .navbar-link-number {
+            font-size: 10px;
+            opacity: 0.5;
+            margin-right: 8px;
+        }
+        
+        .liquid-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+        
+        .image-overlay {
+            position: fixed;
+            z-index: 2;
+            pointer-events: none;
+            width: auto;
+            height: auto;
+        }
+        
+        /* ============ ArrowButton ============
+           Tweak via custom properties, e.g. <ArrowButton style={{ "--ab-accent": "#ff3a32" }}> */
+        .arrow-btn {
+            --ab-h: 44px;              /* total button height */
+            --ab-gap: 4px;             /* space between circle and pill edge */
+            --ab-border: 1px;
+            --ab-bg: #ffffff;
+            --ab-fg: #000000;
+            --ab-accent: #3600ff;
+            --ab-icon: #ffffff;
+            --ab-dot: calc(var(--ab-h) - 2 * (var(--ab-border) + var(--ab-gap)));
+
+            position: relative;
+            isolation: isolate;
+            overflow: hidden;
+            display: inline-flex;
+            align-items: center;
+            height: var(--ab-h);
+            padding: 0 1.6em 0 calc(var(--ab-h) + 0.9em);
+            border: var(--ab-border) solid var(--ab-bg);
+            border-radius: 999px;
+            background: var(--ab-bg);
+            color: var(--ab-fg);
+            font: inherit;
+            font-size: 14px;
+            font-weight: 500;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            text-decoration: none;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+
+        .arrow-btn__fill {
+            position: absolute;
+            top: var(--ab-gap);
+            bottom: var(--ab-gap);
+            left: var(--ab-gap);
+            width: var(--ab-dot);
+            display: grid;
+            place-items: center;
+            border-radius: 999px;
+            background: var(--ab-accent);
+            color: var(--ab-icon);
+            transition-property: top, bottom, left, width;
+            transition-duration: 0.7s;
+            transition-timing-function: cubic-bezier(0.65, 0, 0.35, 1);
+        }
+
+        .arrow-btn:hover .arrow-btn__fill,
+        .arrow-btn:focus-visible .arrow-btn__fill {
+            top: 0;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+        }
+
+        .arrow-btn:focus-visible {
+            outline: 2px solid var(--ab-accent);
+            outline-offset: 3px;
+        }
+
+        .arrow-btn__icon {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* ============ Hero content ============ */
+        .hero {
+            --gutter: 40px;
+            position: relative;
+            height: 100svh;
+            z-index: 3;
+            pointer-events: none;   /* orb stays draggable underneath */
+            color: #fff;
+            font-size: 20px;
+            line-height: 1.3;
+            letter-spacing: -0.01em;
+        }
+
+        .hero a { pointer-events: auto; }
+
+        .hero-muted { color: rgba(255, 255, 255, 0.5); }
+
+        .hero-intro {
+            position: absolute;
+            top: 26%;
+            left: var(--gutter);
+        }
+
+        .hero-cta {
+            position: relative;
+            display: block;
+            width: 314px;
+            margin-top: 52px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid #fff;
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .hero-cta::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 8px;
+            height: 8px;
+            border-top: 1px solid;
+            border-right: 1px solid;
+            transition: translate 0.3s ease;
+        }
+
+        .hero-cta:hover::after { translate: 3px -3px; }
+
+        .hero-services {
+            position: absolute;
+            top: 60%;
+            left: 18.5%;
+            list-style: none;
+            line-height: 1.6;
+        }
+
+        .hero-meta {
+            position: absolute;
+            left: var(--gutter);
+            bottom: 28px;
+            display: flex;
+            align-items: baseline;
+            gap: 12px;
+        }
+
+        .hero-ticks {
+            position: relative;
+            width: 130px;
+            height: 14px;
+            background: repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.8) 0 1px, transparent 1px 13px);
+        }
+
+        .hero-ticks::after {
+            content: "";
+            position: absolute;
+            left: 65px;
+            bottom: 0;
+            width: 1px;
+            height: 48px;
+            background: #fff;
+        }
+
+        .hero-plus {
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            translate: -50% -50%;
+            opacity: 0.85;
+            background:
+                linear-gradient(#fff, #fff) center / 2px 100% no-repeat,
+                linear-gradient(#fff, #fff) center / 100% 2px no-repeat;
+        }
+
+        .hero-signature {
+            position: absolute;
+            right: calc(var(--gutter) - 0.3em);
+            bottom: -0.15em;
+            padding: 0.2em 0.3em;   /* room for swashes so the reveal doesn't crop them */
+            font-family: "Allison", cursive;
+            font-size: clamp(96px, 10vw, 220px);
+            line-height: 1;
+            white-space: nowrap;
+            text-shadow: 0 0 18px rgba(255, 255, 255, 0.35);
+            animation: hero-sign 2.4s cubic-bezier(0.65, 0, 0.35, 1) 0.4s both;
+        }
+
+        @keyframes hero-sign {
+            from { clip-path: inset(0 100% 0 0); }
+            to   { clip-path: inset(0); }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .hero-signature { animation: none; }
+        }
+
+                /* ============ About ============ */
+        .about {
+            --gutter: 40px;
+            --about-pin: 200svh;   /* scroll distance spent lighting the text */
+            position: relative;
+            z-index: 3;
+            height: calc(100svh + var(--about-pin));
+            pointer-events: none;
+            color: #fff;
+        }
+
+        .about-sticky {
+            position: sticky;
+            top: 0;
+            height: 100svh;
+            display: flex;
+            align-items: flex-end;
+            padding: 0 var(--gutter) 56px;
+        }
+
+        /* Dark fade behind the text. It runs 50svh below the screen so it
+           trails off softly instead of leaving a hard edge as the section exits. */
+        .about-sticky::before {
+            content: "";
+            position: absolute;
+            inset: 40% 0 -50svh;
+            z-index: -1;
+            background: linear-gradient(to bottom,
+                transparent,
+                rgba(0, 0, 0, 0.6) 25%,
+                rgba(0, 0, 0, 0.9) 55%,
+                transparent);
+        }
+
+        .about-content {
+            position: relative;
+            font-size: clamp(28px, 2.6vw, 52px);
+            line-height: 1.15;
+            letter-spacing: -0.02em;
+            opacity: 0;
+            translate: 0 48px;
+            transition: opacity 1s ease, translate 1s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .about-content.is-shown {
+            opacity: 1;
+            translate: 0 0;
+        }
+
+        .about-label {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 1lh;   /* exactly one text line, so the pill centres on it */
+            display: flex;
+            align-items: center;
+        }
+
+        .about-label span {
+            padding: 6px 18px;
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            border-radius: 999px;
+            font-size: 14px;
+            line-height: 1.2;
+            letter-spacing: 0;
+        }
+
+        .about-text {
+            --lit: 0;
+            text-indent: 38%;
+        }
+
+        .about-word {
+            white-space: nowrap;   /* words never split across lines */
+        }
+
+        .about-word > span {
+            opacity: clamp(0.2, calc(var(--lit) - var(--i)), 1);
+        }
+
+        .portfolio-placeholder {
+            position: relative;
+            z-index: 3;
+            min-height: 100svh;
+            display: flex;
+            align-items: flex-end;
+            padding: 0 40px 56px;
+            color: #fff;
+            font-size: clamp(40px, 6vw, 96px);
+            letter-spacing: -0.02em;
+            pointer-events: none;
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+            clip-path: inset(50%);
+            white-space: nowrap;
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 16px 24px;
+            }
+            
+            .navbar-logo {
+                font-size: 18px;
+            }
+            
+            .navbar-links {
+                gap: 20px;
+            }
+            
+            .navbar-link {
+                font-size: 12px;
+            }
+            
+            .navbar-link-number {
+                display: none;
+            }
+
+            .arrow-btn {
+                --ab-h: 38px;
+                font-size: 12px;
+            }
+
+            .hero {
+                --gutter: 24px;
+                font-size: 15px;
+            }
+
+            .hero-intro { top: 96px; }
+            .hero-cta { width: 200px; margin-top: 24px; padding-bottom: 10px; }
+            .hero-services { top: auto; bottom: 76px; left: var(--gutter); }
+            .hero-meta { bottom: 24px; }
+            .hero-ticks { width: 78px; }
+            .hero-ticks::after { left: 39px; height: 32px; }
+            .hero-signature { font-size: 84px; bottom: 150px; }
+
+            
+            .about { --gutter: 24px; }
+            .about-sticky { padding-bottom: 32px; }
+            .about-content { font-size: 22px; }
+            .about-label span { padding: 4px 12px; font-size: 12px; }
+            .portfolio-placeholder { padding: 0 24px 32px; }
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useEffect, useRef, useState } = React;
+
+        // ============ CONFIG - EDIT HERE ============
+        const CONFIG = {
+            desktop: {
+                sphere: {
+                    orbStyle: "ember",
+                    tint: "#ff3a32",
+                    core: "#ff3a32",
+                    highlight: "#ffffff",
+                    speed: 50,
+                    ripples: 100,
+                    amplitude: 100
+                },
+                image: {
+                    top: "55%",
+                    left: "50%",
+                    maxWidth: "85%",
+                    maxHeight: "85%"
+                }
+            },
+            mobile: {
+                sphere: {
+                    orbStyle: "ember",
+                    tint: "#ff3a32",
+                    core: "#ff3a32",
+                    highlight: "#ffffff",
+                    speed: 50,
+                    ripples: 100,
+                    amplitude: 60
+                },
+                image: {
+                    top: "48%",
+                    left: "50%",
+                    maxWidth: "95%",
+                    maxHeight: "95%"
+                }
+            }
+        };
+        // ============ END CONFIG ============
+        
+        // ============ ABOUT - EDIT TEXT HERE ============
+        const ABOUT = {
+            label: "About",
+            text: "Om Gaikwad (オム) Software Engineer builds across the full stack, from the architecture nobody sees to the interfaces everyone touches, writing clean, considered code that keeps products fast, stable and easy to grow.",
+        };
+
+        const STYLE_INDEX = {
+            wave: 0, ember: 1, mint: 2, frost: 3, sky: 4,
+            storm: 5, coral: 6, ice: 7, magenta: 8,
+        };
+
+        const SPEED_REFERENCE = 50;
+        const MAX_DT = 0.05;
+        const MAX_DPR = 1.5;
+        const DEFAULT_POINTER = { hover: 123, reach: 51, sensitivity: 177 };
+        const SENS_BASE = 0.4;
+        const SPIN_DAMP = 2.2;
+        const MAX_SPIN = 12;
+        const HOVER_RATE = 8;
+
+        function clamp(v, lo, hi) {
+            return v < lo ? lo : v > hi ? hi : v;
+        }
+
+        function parseColor(input, fallback) {
+            if (!input) return fallback;
+            const s = input.trim();
+
+            if (s[0] === "#") {
+                const hex = s.slice(1);
+                const short = hex.length === 3 || hex.length === 4;
+                const long = hex.length === 6 || hex.length === 8;
+                if (!short && !long) return fallback;
+                const grab = (i) =>
+                    short
+                        ? parseInt(hex[i] + hex[i], 16)
+                        : parseInt(hex.slice(i * 2, i * 2 + 2), 16);
+                const r = grab(0);
+                const g = grab(1);
+                const b = grab(2);
+                if ([r, g, b].some(Number.isNaN)) return fallback;
+                return [r / 255, g / 255, b / 255];
+            }
+
+            const rgb = s.match(/rgba?\(([^)]+)\)/i);
+            if (rgb) {
+                const p = rgb[1].split(/[,/\s]+/).map((v) => parseFloat(v));
+                if (p.length >= 3 && p.slice(0, 3).every((v) => !Number.isNaN(v))) {
+                    return [p[0] / 255, p[1] / 255, p[2] / 255];
+                }
+            }
+
+            const hsl = s.match(/hsla?\(([^)]+)\)/i);
+            if (hsl) {
+                const p = hsl[1].split(/[,/\s]+/).map((v) => parseFloat(v));
+                if (p.length >= 3 && p.slice(0, 3).every((v) => !Number.isNaN(v))) {
+                    const h = ((((p[0] % 360) + 360) % 360) / 360) * 6;
+                    const sat = clamp(p[1] / 100, 0, 1);
+                    const li = clamp(p[2] / 100, 0, 1);
+                    const c = (1 - Math.abs(2 * li - 1)) * sat;
+                    const x = c * (1 - Math.abs((h % 2) - 1));
+                    const m = li - c / 2;
+                    const seg = Math.floor(h) % 6;
+                    const t =
+                        seg === 0
+                            ? [c, x, 0]
+                            : seg === 1
+                              ? [x, c, 0]
+                              : seg === 2
+                                ? [0, c, x]
+                                : seg === 3
+                                  ? [0, x, c]
+                                  : seg === 4
+                                    ? [x, 0, c]
+                                    : [c, 0, x];
+                    return [t[0] + m, t[1] + m, t[2] + m];
+                }
+            }
+
+            return fallback;
+        }
+
+        const VERT = `#version 300 es
+precision highp float;
+const vec2 P[3] = vec2[3](vec2(-1.0, -1.0), vec2(3.0, -1.0), vec2(-1.0, 3.0));
+void main() { gl_Position = vec4(P[gl_VertexID], 0.0, 1.0); }
+`;
+
+        const FRAG = `#version 300 es
+
+precision highp float;
+
+uniform vec2 uSize;
+uniform float uTime;
+uniform float uStyle;
+uniform float uSpeed;
+uniform float uWaveFreq;
+uniform float uAmplitude;
+uniform vec3 uTint;
+uniform vec3 uCore;
+uniform vec3 uHighlight;
+
+uniform vec3 uPointer;
+uniform float uHover;
+uniform float uReach;
+
+uniform vec3 uClick;
+
+uniform mat3 uRot;
+
+const float HOVER_DEPTH = 1.6;
+const float HOVER_CLARITY = 0.55;
+const float HOVER_GLINT = 1.5;
+
+const float CLICK_DEPTH = 1.3;
+const float CLICK_CLARITY = 0.6;
+const float CLICK_GLINT = 1.8;
+const float CLICK_SPEED = 1.4;
+const float CLICK_WIDTH = 0.30;
+const float CLICK_LIFE = 1.6;
+
+out vec4 fragColor;
+
+vec2 goSph(vec3 ro, vec3 rd, float rad) {
+    float b = dot(ro, rd);
+    float c = dot(ro, ro) - rad * rad;
+    float h = b * b - c;
+    if (h < 0.0) return vec2(-1.0);
+    float hs = sqrt(h);
+    return vec2(-b - hs, -b + hs);
+}
+
+float goWaveDisp(vec3 p, float t, float fr, float amp, int style) {
+    float disp = 0.0;
+    if (style == 1) {
+        vec3 q = normalize(p) * 3.0;
+        float uu = q.x * 0.90 + q.y * 0.45 + q.z * 0.25;
+        uu = uu + 0.35 * sin(q.y * 1.5 + t * 0.50);
+        uu = uu + 0.18 * sin(q.z * 2.1 - t * 0.55);
+        float vv = q.z * 0.70 + q.x * 0.55 + q.y * 0.45;
+        vv = vv + 0.30 * sin(q.x * 1.6 - t * 0.55);
+        vv = vv + 0.16 * sin(q.y * 2.0 + t * 0.60);
+        disp = 0.040 * sin(uu * 5.5 * fr) + 0.032 * sin(vv * 5.0 * fr);
+    } else if (style == 2) {
+        vec3 q = normalize(p) * 4.0;
+        float uu = q.x * 0.85 + q.y * 0.50 + q.z * 0.20;
+        uu = uu + 0.25 * sin(q.y * 1.1 + t * 0.28);
+        uu = uu + 0.15 * sin(q.z * 1.9 - t * 0.30);
+        float vv = q.z * 0.70 + q.x * 0.55 + q.y * 0.45;
+        vv = vv + 0.22 * sin(q.x * 1.3 - t * 0.30);
+        vv = vv + 0.13 * sin(q.y * 2.0 + t * 0.32);
+        disp = 0.026 * sin(uu * 9.0 * fr) + 0.022 * sin(vv * 8.5 * fr);
+    } else if (style == 3) {
+        vec3 q = normalize(p) * 3.5;
+        float uu = q.x * 0.85 + q.y * 0.50 + q.z * 0.20;
+        uu = uu + 0.30 * sin(q.y * 1.2 + t * 0.20);
+        uu = uu + 0.18 * sin(q.z * 2.1 - t * 0.25);
+        uu = uu + 0.10 * sin(q.y * 3.5 + q.z * 2.8 + t * 0.18);
+        float vv = q.z * 0.70 + q.x * 0.55 + q.y * 0.45;
+        vv = vv + 0.28 * sin(q.x * 1.3 - t * 0.22);
+        vv = vv + 0.16 * sin(q.y * 2.4 + t * 0.30);
+        vv = vv + 0.09 * sin(q.x * 3.2 + q.z * 2.5 - t * 0.20);
+        disp = 0.038 * sin(uu * 7.5 * fr) + 0.030 * sin(vv * 7.0 * fr);
+    } else if (style == 4) {
+        vec3 q = normalize(p) * 3.0;
+        float uu = q.x * 0.85 + q.y * 0.50 + q.z * 0.20;
+        uu = uu + 0.28 * sin(q.y * 1.0 + t * 0.18);
+        uu = uu + 0.14 * sin(q.z * 1.6 - t * 0.22);
+        float vv = q.z * 0.70 + q.x * 0.55 + q.y * 0.45;
+        vv = vv + 0.25 * sin(q.x * 1.1 - t * 0.20);
+        vv = vv + 0.12 * sin(q.y * 1.7 + t * 0.24);
+        disp = 0.022 * sin(uu * 6.5 * fr) + 0.018 * sin(vv * 6.0 * fr);
+    } else if (style == 5) {
+        vec3 q = normalize(p) * 3.5;
+        float uu = q.x * 0.85 + q.y * 0.50 + q.z * 0.20;
+        uu = uu + 0.32 * sin(q.y * 1.6 + t * 0.50);
+        uu = uu + 0.20 * sin(q.z * 2.3 - t * 0.60);
+        float vv = q.z * 0.70 + q.x * 0.55 + q.y * 0.45;
+        vv = vv + 0.28 * sin(q.x * 1.7 + t * 0.55);
+        vv = vv + 0.18 * sin(q.y * 2.4 - t * 0.70);
+        disp = 0.042 * sin(uu * 6.5 * fr)
+             + 0.034 * sin(vv * 6.0 * fr)
+             + 0.018 * sin((uu + vv) * 8.5 * fr + t * 0.4);
+    } else if (style == 6) {
+        vec3 q = normalize(p) * 3.3;
+        float uu = q.x * 0.85 + q.y * 0.50 + q.z * 0.20;
+        uu = uu + 0.32 * sin(q.y * 1.2 + t * 0.30);
+        uu = uu + 0.18 * sin(q.z * 1.8 - t * 0.28);
+        float vv = -q.x * 0.55 + q.z * 0.65 + q.y * 0.40;
+        vv = vv + 0.28 * sin(q.x * 1.3 + t * 0.35);
+        vv = vv + 0.16 * sin(q.y * 2.0 - t * 0.25);
+        disp = 0.040 * sin(uu * 6.5 * fr) + 0.034 * sin(vv * 6.0 * fr);
+    } else if (style == 7) {
+        vec3 q = normalize(p) * 4.0;
+        float uu = q.x * 0.85 + q.y * 0.50 + q.z * 0.20;
+        uu = uu + 0.22 * sin(q.y * 1.4 + t * 0.22);
+        uu = uu + 0.13 * sin(q.z * 2.3 - t * 0.18);
+        float vv = q.z * 0.70 + q.x * 0.55 + q.y * 0.45;
+        vv = vv + 0.20 * sin(q.x * 1.5 - t * 0.22);
+        vv = vv + 0.12 * sin(q.y * 2.5 + t * 0.20);
+        disp = 0.030 * sin(uu * 10.0 * fr) + 0.025 * sin(vv * 9.5 * fr);
+    } else if (style == 8) {
+        vec3 q = normalize(p) * 4.0;
+        float uu = q.x * 0.85 + q.y * 0.50 + q.z * 0.20;
+        uu = uu + 0.25 * sin(q.y * 1.4 + t * 0.55);
+        uu = uu + 0.14 * sin(q.z * 2.0 - t * 0.45);
+        float vv = q.z * 0.70 + q.x * 0.55 + q.y * 0.45;
+        vv = vv + 0.22 * sin(q.x * 1.5 - t * 0.50);
+        vv = vv + 0.13 * sin(q.y * 2.2 + t * 0.45);
+        disp = 0.030 * sin(uu * 9.5 * fr + t * 0.45) + 0.025 * sin(vv * 9.0 * fr - t * 0.40);
+    } else {
+        vec3 q = normalize(p) * 3.5;
+        float uu = q.x * 0.85 + q.y * 0.50 + q.z * 0.20;
+        uu = uu + 0.32 * sin(q.y * 1.0 + t * 0.30);
+        uu = uu + 0.22 * sin(q.z * 1.3 - t * 0.35);
+        uu = uu + 0.14 * sin(q.y * 1.9 + q.z * 1.6 + t * 0.25);
+        float vv = q.z * 0.70 + q.x * 0.55 + q.y * 0.45;
+        vv = vv + 0.30 * sin(q.x * 1.2 - t * 0.32);
+        vv = vv + 0.20 * sin(q.y * 1.5 + t * 0.45);
+        vv = vv + 0.14 * sin(q.z * 1.9 + q.x * 1.6 + t * 0.28);
+        disp = 0.042 * sin(uu * 7.0 * fr) + 0.034 * sin(vv * 6.5 * fr);
+    }
+    return disp * amp;
+}
+
+float goMap(vec3 p, float t, float fr, float amp, int style) {
+    return length(p) - 1.0 - goWaveDisp(p, t, fr, amp, style);
+}
+
+vec3 goNormal(vec3 p, float t, float e, float fr, float amp, int style) {
+    vec2 k = vec2(1.0, -1.0);
+    return normalize(
+        k.xyy * goMap(p + k.xyy * e, t, fr, amp, style) +
+        k.yyx * goMap(p + k.yyx * e, t, fr, amp, style) +
+        k.yxy * goMap(p + k.yxy * e, t, fr, amp, style) +
+        k.xxx * goMap(p + k.xxx * e, t, fr, amp, style)
+    );
+}
+
+float goAmpSum(int style) {
+    if (style == 1) return 0.072;
+    if (style == 2) return 0.048;
+    if (style == 3) return 0.068;
+    if (style == 4) return 0.040;
+    if (style == 5) return 0.094;
+    if (style == 6) return 0.074;
+    if (style == 7) return 0.055;
+    if (style == 8) return 0.055;
+    return 0.076;
+}
+
+float goLip(int style) {
+    if (style == 1) return 2.5;
+    if (style == 2) return 3.0;
+    if (style == 3) return 2.8;
+    if (style == 4) return 2.2;
+    if (style == 5) return 3.0;
+    if (style == 6) return 2.5;
+    if (style == 7) return 3.5;
+    if (style == 8) return 3.5;
+    return 2.0;
+}
+
+vec3 goLight1(int style) {
+    if (style == 1) return normalize(vec3(0.55, 0.80, 0.55));
+    if (style == 2) return normalize(vec3(-0.45, 0.85, 0.55));
+    if (style == 6) return normalize(vec3(-0.50, 0.85, 0.55));
+    if (style == 7) return normalize(vec3(-0.50, 0.85, 0.55));
+    if (style == 8) return normalize(vec3(-0.50, 0.85, 0.55));
+    return normalize(vec3(-0.55, 0.85, 0.55));
+}
+
+vec3 goLight2(int style) {
+    if (style == 1) return normalize(vec3(-0.40, 0.30, 0.80));
+    if (style == 2) return normalize(vec3(0.50, 0.30, 0.75));
+    if (style == 6) return normalize(vec3(0.50, 0.30, 0.75));
+    if (style == 7) return normalize(vec3(0.45, 0.30, 0.80));
+    if (style == 8) return normalize(vec3(0.45, 0.30, 0.80));
+    return normalize(vec3(0.40, 0.30, 0.80));
+}
+
+void main() {
+    vec2 size = uSize;
+
+    vec2 pos = vec2(gl_FragCoord.x, size.y - gl_FragCoord.y);
+    vec2 uv = (pos - 0.5 * size) / min(size.x, size.y);
+    uv = uv * 2.0;
+
+    int style = int(uStyle);
+    float fr = uWaveFreq;
+    float t = uTime * uSpeed;
+
+    vec3 ro = vec3(0.0, 0.0, 3.0);
+    vec3 rd = normalize(vec3(uv, -1.8));
+
+    float ampSum = goAmpSum(style);
+
+    float rDial = 1.0 + ampSum * uAmplitude + 0.04;
+    float orbUv = 1.8 * rDial / sqrt(max(9.0 - rDial * rDial, 1e-4));
+
+    float reach = max(uReach * orbUv, 1e-4);
+
+    float w = uPointer.z * (1.0 - smoothstep(0.0, reach, length(uv - uPointer.xy)));
+
+    float clickAge = max(uClick.z, 0.0);
+    float ringR = clickAge * CLICK_SPEED;
+    float ringDist = length(uv - uClick.xy) - ringR;
+    float ring = exp(-(ringDist * ringDist) / (CLICK_WIDTH * CLICK_WIDTH))
+               * exp(-clickAge / CLICK_LIFE);
+
+    float amp = uAmplitude * (1.0 + HOVER_DEPTH * uHover * w + CLICK_DEPTH * ring);
+
+    float boundRad = 1.0 + ampSum * amp + 0.04;
+    float lip = goLip(style) * max(1.0, fr) * max(1.0, amp);
+
+    mat3 rInv = transpose(uRot);
+    vec3 roO = rInv * ro;
+    vec3 rdO = rInv * rd;
+
+    vec2 hh = goSph(roO, rdO, boundRad);
+
+    if (hh.x < 0.0) { fragColor = vec4(0.0); return; }
+
+    float tHit = max(hh.x - 0.02, 0.0);
+    float tMax = hh.y + 0.02;
+    bool hit = false;
+    vec3 pHit = vec3(0.0);
+    for (int i = 0; i < 96; i++) {
+        vec3 p = roO + rdO * tHit;
+        float d = goMap(p, t, fr, amp, style) / lip;
+        if (d < 0.0004) { hit = true; pHit = p; break; }
+        tHit = tHit + d * 0.85;
+        if (tHit > tMax) break;
+    }
+    if (!hit) { fragColor = vec4(0.0); return; }
+
+    float chord = hh.y - hh.x;
+    float graze = clamp(1.0 - chord / (2.5 * boundRad), 0.0, 1.0);
+    float nEps = mix(0.0015, 0.0070, graze);
+    vec3 n = goNormal(pHit, t, nEps, fr, amp, style);
+    vec3 v = -rdO;
+    float ndv = clamp(dot(n, v), 0.0, 1.0);
+
+    vec3 L1 = rInv * goLight1(style);
+    vec3 L2 = rInv * goLight2(style);
+    vec3 baseTint = uTint * 2.0;
+
+    vec3 absorption = 4.5 * (1.0 - uCore) * clamp(1.0 - HOVER_CLARITY * uHover * w - CLICK_CLARITY * ring, 0.0, 1.0);
+
+    vec3 rIn = refract(rdO, n, 1.0 / 1.45);
+    float tBack = 0.01;
+    vec3 pBack = pHit + rIn * tBack;
+    for (int i = 0; i < 32; i++) {
+        pBack = pHit + rIn * tBack;
+        float d = goMap(pBack, t, fr, amp, style);
+        if (d > -0.0008) break;
+        tBack = tBack + (-d) / lip * 0.85;
+        if (tBack > 3.5) break;
+    }
+    vec3 transmit = exp(-absorption * tBack);
+
+    vec3 nBack = goNormal(pBack, t, nEps, fr, amp, style);
+    float bDiff = (dot(nBack, L1) * 0.5 + 0.5) * 0.65
+                + (dot(nBack, L2) * 0.5 + 0.5) * 0.40;
+    vec3 interior = baseTint * (0.20 + bDiff) * transmit;
+
+    float fres = pow(1.0 - ndv, 3.5);
+    interior = interior + baseTint * fres * 0.55;
+
+    float exp1 = mix(380.0, 90.0, graze);
+    float exp2 = mix(240.0, 60.0, graze);
+    vec3 H1 = normalize(L1 + v);
+    vec3 H2 = normalize(L2 + v);
+    float spec1 = pow(clamp(dot(n, H1), 0.0, 1.0), exp1);
+    float spec2 = pow(clamp(dot(n, H2), 0.0, 1.0), exp2);
+    float gloss = pow(clamp(dot(n, H1), 0.0, 1.0), 40.0) * 0.10;
+
+    vec3 hl = uHighlight * (1.0 + HOVER_GLINT * uHover * w + CLICK_GLINT * ring);
+    vec3 col = interior;
+    col = col + hl * spec1 * 6.5;
+    col = col + hl * spec2 * 3.0;
+    col = col + hl * gloss;
+
+    col = col / (1.0 + col * 0.65);
+    fragColor = vec4(col, 1.0);
+}
+`;
+
+        function LiquidOrb(props) {
+            const {
+                background = "#000000",
+                orbStyle = "mint",
+                tint = "#00FEFF",
+                core = "#FFFFFF",
+                highlight = "#FFFFFF",
+                speed = 50,
+                ripples = 125,
+                amplitude = 160,
+                pointer,
+                style,
+            } = props;
+
+            const ptr = { ...DEFAULT_POINTER, ...(pointer ?? {}) };
+            const canvasRef = useRef(null);
+
+            const liveRef = useRef({
+                orbStyle,
+                tint,
+                core,
+                highlight,
+                speed,
+                ripples,
+                amplitude,
+                ptr,
+            });
+
+            liveRef.current = {
+                orbStyle,
+                tint,
+                core,
+                highlight,
+                speed,
+                ripples,
+                amplitude,
+                ptr,
+            };
+
+            useEffect(() => {
+                const canvas = canvasRef.current;
+                if (!canvas) return;
+
+                const gl = canvas.getContext("webgl2", {
+                    alpha: true,
+                    antialias: false,
+                    premultipliedAlpha: true,
+                });
+                if (!gl) return;
+
+                const compile = (type, src) => {
+                    const sh = gl.createShader(type);
+                    if (!sh) return null;
+                    gl.shaderSource(sh, src);
+                    gl.compileShader(sh);
+                    if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) {
+                        console.error("LiquidOrb shader:", gl.getShaderInfoLog(sh));
+                        gl.deleteShader(sh);
+                        return null;
+                    }
+                    return sh;
+                };
+
+                const vs = compile(gl.VERTEX_SHADER, VERT);
+                const fs = compile(gl.FRAGMENT_SHADER, FRAG);
+                if (!vs || !fs) return;
+
+                const program = gl.createProgram();
+                if (!program) return;
+                gl.attachShader(program, vs);
+                gl.attachShader(program, fs);
+                gl.linkProgram(program);
+                if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+                    console.error("LiquidOrb link:", gl.getProgramInfoLog(program));
+                    return;
+                }
+                gl.useProgram(program);
+
+                const U = {
+                    size: gl.getUniformLocation(program, "uSize"),
+                    time: gl.getUniformLocation(program, "uTime"),
+                    style: gl.getUniformLocation(program, "uStyle"),
+                    speed: gl.getUniformLocation(program, "uSpeed"),
+                    waveFreq: gl.getUniformLocation(program, "uWaveFreq"),
+                    amplitude: gl.getUniformLocation(program, "uAmplitude"),
+                    tint: gl.getUniformLocation(program, "uTint"),
+                    core: gl.getUniformLocation(program, "uCore"),
+                    highlight: gl.getUniformLocation(program, "uHighlight"),
+                    pointer: gl.getUniformLocation(program, "uPointer"),
+                    hover: gl.getUniformLocation(program, "uHover"),
+                    reach: gl.getUniformLocation(program, "uReach"),
+                    click: gl.getUniformLocation(program, "uClick"),
+                    rot: gl.getUniformLocation(program, "uRot"),
+                };
+
+                const vao = gl.createVertexArray();
+                gl.bindVertexArray(vao);
+
+                let bw = 1;
+                let bh = 1;
+                const resize = () => {
+                    const w = canvas.clientWidth || 1;
+                    const h = canvas.clientHeight || 1;
+                    const dpr = Math.min(window.devicePixelRatio || 1, MAX_DPR);
+                    bw = Math.max(1, Math.round(w * dpr));
+                    bh = Math.max(1, Math.round(h * dpr));
+                    if (canvas.width !== bw || canvas.height !== bh) {
+                        canvas.width = bw;
+                        canvas.height = bh;
+                    }
+                    gl.viewport(0, 0, bw, bh);
+                };
+                resize();
+                const ro = new ResizeObserver(resize);
+                ro.observe(canvas);
+
+                const ptrState = { fx: 0.5, fy: 0.5, presence: 0, target: 0 };
+                const clickState = { fx: 0.5, fy: 0.5, start: 0 };
+                const spin = { yaw: 0, pitch: 0, vYaw: 0, vPitch: 0 };
+                let dragging = false;
+                let lastX = 0;
+                let lastY = 0;
+                let lastMove = performance.now();
+
+                const radPerPx = () =>
+                    ((SENS_BASE * Math.max(0, liveRef.current.ptr.sensitivity)) / 100) *
+                    (Math.PI / 180);
+
+                const onMove = (e) => {
+                    const r = canvas.getBoundingClientRect();
+                    if (r.width <= 0 || r.height <= 0) return;
+                    const fx = (e.clientX - r.left) / r.width;
+                    const fy = (e.clientY - r.top) / r.height;
+                    ptrState.fx = fx;
+                    ptrState.fy = fy;
+                    const inside = fx >= 0 && fx <= 1 && fy >= 0 && fy <= 1;
+                    ptrState.target = inside || dragging ? 1 : 0;
+
+                    if (!dragging) return;
+                    const now = performance.now();
+                    const dt = Math.max((now - lastMove) / 1000, 1 / 240);
+                    lastMove = now;
+                    const dx = e.clientX - lastX;
+                    const dy = e.clientY - lastY;
+                    lastX = e.clientX;
+                    lastY = e.clientY;
+                    const k = radPerPx();
+                    spin.yaw += dx * k;
+                    spin.pitch += dy * k;
+
+                    spin.vYaw = clamp((dx * k) / dt, -MAX_SPIN, MAX_SPIN);
+                    spin.vPitch = clamp((dy * k) / dt, -MAX_SPIN, MAX_SPIN);
+                };
+
+                const onDown = (e) => {
+                    dragging = true;
+                    lastX = e.clientX;
+                    lastY = e.clientY;
+                    lastMove = performance.now();
+
+                    spin.vYaw = 0;
+                    spin.vPitch = 0;
+
+                    const r = canvas.getBoundingClientRect();
+                    if (r.width > 0 && r.height > 0) {
+                        clickState.fx = (e.clientX - r.left) / r.width;
+                        clickState.fy = (e.clientY - r.top) / r.height;
+                        clickState.start = performance.now();
+                    }
+                };
+
+                const onUp = () => {
+                    dragging = false;
+                };
+
+                const onLeave = () => {
+                    if (!dragging) ptrState.target = 0;
+                };
+
+                canvas.addEventListener("pointerdown", onDown);
+                canvas.addEventListener("pointerleave", onLeave);
+
+                window.addEventListener("pointermove", onMove);
+                window.addEventListener("pointerup", onUp);
+                window.addEventListener("pointercancel", onUp);
+
+                let raf = 0;
+                let last = performance.now();
+                let clock = 0;
+
+                const tick = (now) => {
+                    const dt = clamp((now - last) / 1000, 0, MAX_DT);
+                    last = now;
+
+                    const L = liveRef.current;
+                    clock = (clock + dt * (L.speed / SPEED_REFERENCE)) % 100000;
+
+                    ptrState.presence +=
+                        (ptrState.target - ptrState.presence) *
+                        (1 - Math.exp(-dt * HOVER_RATE));
+
+                    if (!dragging) {
+                        spin.yaw += spin.vYaw * dt;
+                        spin.pitch += spin.vPitch * dt;
+                        const decay = Math.exp(-dt * SPIN_DAMP);
+                        spin.vYaw *= decay;
+                        spin.vPitch *= decay;
+                    }
+
+                    const cy = Math.cos(spin.yaw);
+                    const sy = Math.sin(spin.yaw);
+                    const cp = Math.cos(spin.pitch);
+                    const sp = Math.sin(spin.pitch);
+                    const rot = new Float32Array([
+                        cy, 0, -sy, sy * sp, cp, cy * sp, sy * cp, -sp, cy * cp,
+                    ]);
+
+                    const minSide = Math.min(bw, bh);
+                    const puX = ((ptrState.fx - 0.5) * bw * 2) / minSide;
+                    const puY = ((ptrState.fy - 0.5) * bh * 2) / minSide;
+                    const cuX = ((clickState.fx - 0.5) * bw * 2) / minSide;
+                    const cuY = ((clickState.fy - 0.5) * bh * 2) / minSide;
+                    const clickAge = (now - clickState.start) / 1000;
+
+                    const tintRgb = parseColor(L.tint, [0.176, 0.031, 0.702]);
+                    const coreRgb = parseColor(L.core, [0.51, 0.243, 0.922]);
+                    const hlRgb = parseColor(L.highlight, [1, 1, 1]);
+
+                    gl.useProgram(program);
+                    gl.bindVertexArray(vao);
+                    gl.uniform2f(U.size, bw, bh);
+
+                    gl.uniform1f(U.time, clock);
+                    gl.uniform1f(U.speed, 1);
+                    gl.uniform1f(U.style, STYLE_INDEX[L.orbStyle] ?? 0);
+                    gl.uniform1f(U.waveFreq, clamp(L.ripples, 1, 400) / 100);
+                    gl.uniform1f(U.amplitude, Math.max(0, L.amplitude) / 100);
+                    gl.uniform3f(U.tint, tintRgb[0], tintRgb[1], tintRgb[2]);
+                    gl.uniform3f(U.core, coreRgb[0], coreRgb[1], coreRgb[2]);
+                    gl.uniform3f(U.highlight, hlRgb[0], hlRgb[1], hlRgb[2]);
+                    gl.uniform3f(U.pointer, puX, puY, ptrState.presence);
+                    gl.uniform3f(U.click, cuX, cuY, clickAge);
+                    gl.uniform1f(U.hover, Math.max(0, L.ptr.hover) / 100);
+                    gl.uniform1f(U.reach, clamp(L.ptr.reach, 1, 200) / 100);
+                    gl.uniformMatrix3fv(U.rot, false, rot);
+
+                    gl.clearColor(0, 0, 0, 0);
+                    gl.clear(gl.COLOR_BUFFER_BIT);
+                    gl.drawArrays(gl.TRIANGLES, 0, 3);
+
+                    raf = requestAnimationFrame(tick);
+                };
+
+                raf = requestAnimationFrame(tick);
+
+                return () => {
+                    cancelAnimationFrame(raf);
+                    ro.disconnect();
+                    canvas.removeEventListener("pointerdown", onDown);
+                    canvas.removeEventListener("pointerleave", onLeave);
+                    window.removeEventListener("pointermove", onMove);
+                    window.removeEventListener("pointerup", onUp);
+                    window.removeEventListener("pointercancel", onUp);
+                };
+            }, []);
+
+            return (
+                <div
+                    style={{
+                        width: "100%",
+                        height: "100%",
+                        position: "relative",
+                        overflow: "hidden",
+                        background,
+                        ...style,
+                    }}
+                >
+                    <canvas
+                        ref={canvasRef}
+                        style={{
+                            position: "absolute",
+                            inset: 0,
+                            width: "100%",
+                            height: "100%",
+                            display: "block",
+                            touchAction: "none",
+                            cursor: "grab",
+                            zIndex: 1,
+                        }}
+                    />
+                </div>
+            );
+        }
+
+        // ArrowButton: renders <a> when given href, otherwise <button>.
+        function ArrowButton({ href, children, className = "", ...rest }) {
+            const Tag = href ? "a" : "button";
+            return (
+                <Tag
+                    href={href}
+                    type={href ? undefined : "button"}
+                    className={`arrow-btn ${className}`.trim()}
+                    {...rest}
+                >
+                    <span className="arrow-btn__fill" aria-hidden="true">
+                        <svg className="arrow-btn__icon" viewBox="0 0 24 24" fill="none"
+                             stroke="currentColor" strokeWidth="1.6"
+                             strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M4 12h16M14 6l6 6-6 6" />
+                        </svg>
+                    </span>
+                    {children}
+                </Tag>
+            );
+        }
+
+        // HeroContent: text, marks and signature layered over the orb.
+        const SERVICES = ["Development", "Interfaces", "Architecture"];
+        const PLUS_MARKS = [
+            { left: "41%", top: "54%" },
+            { left: "57%", top: "39%" },
+            { left: "72%", top: "54%" },
+            { left: "88%", top: "39%" },
+        ];
+
+        function HeroContent() {
+            return (
+                <div id="home" className="hero">
+                    <div className="hero-intro">
+                        <p>
+                            Before the code,<br />
+                            comes the <span lang="ja">こうきしん</span><br />
+                            <span className="hero-muted">Here’s where it started.</span>
+                        </p>
+                        <a href="#portfolio" className="hero-cta">Explore Now</a>
+                    </div>
+
+                    <ol className="hero-services">
+                        {SERVICES.map((item, i) => (
+                            <li key={item}>
+                                {i === 0 && <span className="hero-muted">01/ </span>}
+                                {item}
+                            </li>
+                        ))}
+                    </ol>
+
+                    <div className="hero-meta">
+                        <span>© 2026</span>
+                        <span className="hero-ticks" aria-hidden="true" />
+                        <span>23′</span>
+                    </div>
+
+                    {PLUS_MARKS.map((pos, i) => (
+                        <span key={i} className="hero-plus" style={pos} aria-hidden="true" />
+                    ))}
+
+                    <p className="hero-signature">Om Gaikwad</p>
+                </div>
+            );
+        }
+                // AboutSection: pins while scrolling and lights its text one character at a time.
+        const ABOUT_LIGHT_END = 0.9; // text is fully lit at 90% of the pin, the rest is a short hold
+
+        function AboutSection({ label, text }) {
+            const sectionRef = useRef(null);
+            const stickyRef = useRef(null);
+            const contentRef = useRef(null);
+            const textRef = useRef(null);
+            const [shown, setShown] = useState(false);
+
+            let total = 0;
+            const words = text.split(/\s+/).filter(Boolean)
+                .map((word) => [...word].map((ch) => [ch, total++]));
+
+            useEffect(() => {
+                let raf = 0;
+
+                const update = () => {
+                    raf = 0;
+                    const top = sectionRef.current.getBoundingClientRect().top;
+                    const run = sectionRef.current.offsetHeight - stickyRef.current.offsetHeight;
+                    const p = run > 0 ? clamp(-top / run, 0, 1) : 1;
+                    const lit = Math.min(p / ABOUT_LIGHT_END, 1) * total;
+                    textRef.current.style.setProperty("--lit", lit.toFixed(2));
+                };
+                const onScroll = () => {
+                    if (!raf) raf = requestAnimationFrame(update);
+                };
+
+                const io = new IntersectionObserver(([entry]) => {
+                    if (entry.isIntersecting) {
+                        setShown(true);
+                        io.disconnect();
+                    }
+                }, { threshold: 0.3 });
+                io.observe(contentRef.current);
+
+                update();
+                window.addEventListener("scroll", onScroll, { passive: true });
+                window.addEventListener("resize", onScroll);
+                return () => {
+                    cancelAnimationFrame(raf);
+                    io.disconnect();
+                    window.removeEventListener("scroll", onScroll);
+                    window.removeEventListener("resize", onScroll);
+                };
+            }, [total]);
+
+            return (
+                <section id="about" className="about" ref={sectionRef}>
+                    <div className="about-sticky" ref={stickyRef}>
+                        <div className={`about-content${shown ? " is-shown" : ""}`} ref={contentRef}>
+                            <div className="about-label"><span>{label}</span></div>
+                            <p className="about-text" ref={textRef}>
+                                <span className="sr-only">{text}</span>
+                                {words.map((chars, w) => (
+                                    <React.Fragment key={w}>
+                                        <span className="about-word" aria-hidden="true">
+                                            {chars.map(([ch, i]) => (
+                                                <span key={i} style={{ "--i": i }}>{ch}</span>
+                                            ))}
+                                        </span>{" "}
+                                    </React.Fragment>
+                                ))}
+                            </p>
+                        </div>
+                    </div>
+                </section>
+            );
+        }
+
+        // Main App Component
+        function App() {
+            const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+            useEffect(() => {
+                const handleResize = () => {
+                    setIsMobile(window.innerWidth < 768);
+                };
+
+                window.addEventListener("resize", handleResize);
+                return () => window.removeEventListener("resize", handleResize);
+            }, []);
+
+            const settings = isMobile ? CONFIG.mobile : CONFIG.desktop;
+            const sphereConfig = settings.sphere;
+            const imageConfig = settings.image;
+
+            return (
+                <div className="container">
+                    <nav className="navbar">
+                        <div className="navbar-logo">OMMM</div>
+                        <ul className="navbar-links">
+                            <li>
+                                <a href="#home" className="navbar-link">
+                                    <span className="navbar-link-number">01</span>Home
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#portfolio" className="navbar-link">
+                                    <span className="navbar-link-number">02</span>Portfolio
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#about" className="navbar-link">
+                                    <span className="navbar-link-number">03</span>About
+                                </a>
+                            </li>
+                            <li>
+                                <ArrowButton href="#contact">Contact</ArrowButton>
+                            </li>
+                        </ul>
+                    </nav>
+
+                    <div className="liquid-background">
+                        <LiquidOrb
+                            orbStyle={sphereConfig.orbStyle}
+                            tint={sphereConfig.tint}
+                            core={sphereConfig.core}
+                            highlight={sphereConfig.highlight}
+                            speed={sphereConfig.speed}
+                            ripples={sphereConfig.ripples}
+                            amplitude={sphereConfig.amplitude}
+                        />
+                    </div>
+                    <img
+                        src="toplayer.png"
+                        alt="Character"
+                        className="image-overlay"
+                        style={{
+                            top: imageConfig.top,
+                            left: imageConfig.left,
+                            transform: "translate(-50%, -50%)",
+                            maxWidth: imageConfig.maxWidth,
+                            maxHeight: imageConfig.maxHeight,
+                        }}
+                    />
+                    <HeroContent />
+                                        <AboutSection label={ABOUT.label} text={ABOUT.text} />
+                    <section id="portfolio" className="portfolio-placeholder">Portfolio</section>
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById("root"));
+        root.render(<App />);
+    </script>
+</body>
+</html>
