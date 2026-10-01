@@ -11,6 +11,7 @@ import {
   type Engine,
   type EngineHooks,
 } from "./engine";
+import { markReady } from "@/lib/loading";
 import styles from "./LiquidCarousel.module.css";
 
 export type LiquidCarouselProps = CarouselSettings & {
@@ -59,8 +60,11 @@ export default function LiquidCarousel({
         () => hooksRef.current,
       );
     } catch {
+      markReady("carousel");
       return;
     }
+    // Renderer + lens shader are compiled; the heavy start-up is done.
+    markReady("carousel");
     engineRef.current = engine;
     return () => {
       engineRef.current = null;

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, type CSSProperties } from "react";
 import { clamp } from "@/lib/clamp";
+import { markReady } from "@/lib/loading";
 import { parseColor } from "@/lib/parseColor";
 import { FRAG, VERT } from "./shader";
 import styles from "./LiquidOrb.module.css";
@@ -72,7 +73,7 @@ export default function LiquidOrb({
       antialias: false,
       premultipliedAlpha: true,
     });
-    if (!gl) return;
+    if (!gl) return markReady("orb");
 
     const compile = (type: number, src: string) => {
       const sh = gl.createShader(type);
@@ -89,16 +90,16 @@ export default function LiquidOrb({
 
     const vs = compile(gl.VERTEX_SHADER, VERT);
     const fs = compile(gl.FRAGMENT_SHADER, FRAG);
-    if (!vs || !fs) return;
+    if (!vs || !fs) return markReady("orb");
 
     const program = gl.createProgram();
-    if (!program) return;
+    if (!program) return markReady("orb");
     gl.attachShader(program, vs);
     gl.attachShader(program, fs);
     gl.linkProgram(program);
     if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
       console.error("LiquidOrb link:", gl.getProgramInfoLog(program));
-      return;
+      return markReady("orb");
     }
     gl.useProgram(program);
 
@@ -211,6 +212,7 @@ export default function LiquidOrb({
     window.addEventListener("pointercancel", onUp);
 
     let raf = 0;
+    let frames = 0;
     let last = performance.now();
     let clock = 0;
 
@@ -273,6 +275,9 @@ export default function LiquidOrb({
       gl.clearColor(0, 0, 0, 0);
       gl.clear(gl.COLOR_BUFFER_BIT);
       gl.drawArrays(gl.TRIANGLES, 0, 3);
+
+      // A few frames in, the shader is compiled and running smoothly.
+      if (++frames === 3) markReady("orb");
 
       raf = requestAnimationFrame(tick);
     };

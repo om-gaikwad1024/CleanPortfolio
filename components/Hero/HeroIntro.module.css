@@ -53,22 +53,20 @@
 
 /* Load-in: lines rise out of a blur one after another, then the link's
    underline draws across and its corner arrow pops in. */
-@media (prefers-reduced-motion: no-preference) {
-  .line {
-    animation: rise 0.9s var(--ease-out) calc(0.35s + var(--i) * 0.12s) backwards;
-  }
+.line {
+  animation: rise 0.9s var(--ease-out) calc(0.35s + var(--i) * 0.12s) backwards;
+}
 
-  .cta {
-    animation: fade 0.8s ease 0.8s backwards;
-  }
+.cta {
+  animation: fade 0.8s ease 0.8s backwards;
+}
 
-  .cta::before {
-    animation: draw 1s var(--ease-in-out) 0.85s backwards;
-  }
+.cta::before {
+  animation: draw 1s var(--ease-in-out) 0.85s backwards;
+}
 
-  .cta::after {
-    animation: pop 0.5s var(--ease-out) 1.55s backwards;
-  }
+.cta::after {
+  animation: pop 0.5s var(--ease-out) 1.55s backwards;
 }
 
 @keyframes rise {

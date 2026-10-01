@@ -20,11 +20,12 @@
   --gutter: 40px;
   --nav-h: 84px; /* fixed navbar height (padding + button) */
 
-  /* Stacking: orb < character < page content < navbar */
+  /* Stacking: orb < character < page content < navbar < loader */
   --z-orb: 1;
   --z-overlay: 2;
   --z-content: 3;
   --z-nav: 10;
+  --z-loader: 100;
 }
 
 @media (max-width: 768px) {
@@ -43,6 +44,14 @@
 body {
   background: var(--color-bg);
   font-family: var(--font-sans);
+}
+
+/* Every load-in animation holds on its first frame until the Loader has faded
+   out and set html[data-loaded]; then they all start together. */
+html:not([data-loaded]) body :not([data-loader], [data-loader] *),
+html:not([data-loaded]) body :not([data-loader], [data-loader] *)::before,
+html:not([data-loaded]) body :not([data-loader], [data-loader] *)::after {
+  animation-play-state: paused !important;
 }
 
 .sr-only {

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Allison } from "next/font/google";
+import Loader from "@/components/Loader/Loader";
 import SmoothScroll from "@/components/SmoothScroll/SmoothScroll";
 import "./globals.css";
 
@@ -18,7 +19,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={allison.variable}>
       <body>
-        <SmoothScroll>{children}</SmoothScroll>
+        <SmoothScroll>
+          <Loader />
+          {children}
+        </SmoothScroll>
       </body>
     </html>
   );

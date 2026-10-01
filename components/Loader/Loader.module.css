@@ -1,0 +1,69 @@
+.loader {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-loader);
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 18px;
+  background: var(--color-bg);
+  color: var(--color-fg);
+  transition: opacity 0.7s var(--ease-in-out);
+}
+
+.leaving {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.logo {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.5em;
+  margin-right: -0.5em; /* optically centre the tracked-out word */
+  animation: breathe 1.6s ease-in-out infinite alternate;
+}
+
+/* Thin track with a light sweeping across it. */
+.bar {
+  position: relative;
+  width: 120px;
+  height: 1px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.bar::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  width: 40%;
+  background: linear-gradient(90deg, transparent, var(--color-fg), transparent);
+  animation: sweep 1.2s var(--ease-in-out) infinite;
+}
+
+.leaving .logo {
+  transition:
+    translate 0.7s var(--ease-in-out),
+    filter 0.7s var(--ease-in-out);
+  translate: 0 -6px;
+  filter: blur(4px);
+}
+
+@keyframes breathe {
+  from {
+    opacity: 0.45;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes sweep {
+  from {
+    translate: -100% 0;
+  }
+  to {
+    translate: 250% 0;
+  }
+}

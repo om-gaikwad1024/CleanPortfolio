@@ -10,11 +10,9 @@
 }
 
 /* Load-in: each mark spins in from a quarter turn with a slight overshoot. */
-@media (prefers-reduced-motion: no-preference) {
-  .plus {
-    animation: spin-in 0.9s cubic-bezier(0.34, 1.56, 0.64, 1)
-      calc(1s + var(--i) * 0.12s) backwards;
-  }
+.plus {
+  animation: spin-in 0.9s cubic-bezier(0.34, 1.56, 0.64, 1)
+    calc(1s + var(--i) * 0.12s) backwards;
 }
 
 @keyframes spin-in {
