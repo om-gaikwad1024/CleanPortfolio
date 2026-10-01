@@ -1,3 +1,4 @@
+import About from "@/components/About/About";
 import CharacterOverlay from "@/components/CharacterOverlay/CharacterOverlay";
 import Hero from "@/components/Hero/Hero";
 import OrbBackground from "@/components/LiquidOrb/OrbBackground";
@@ -11,6 +12,7 @@ export default function Home() {
       <OrbBackground />
       <CharacterOverlay />
       <Hero />
+      <About />
     </main>
   );
 }

@@ -1,0 +1,97 @@
+.about {
+  --about-pin: 200svh; /* scroll distance spent lighting the text */
+  position: relative;
+  z-index: var(--z-content);
+  height: calc(100svh + var(--about-pin));
+  pointer-events: none;
+  color: var(--color-fg);
+}
+
+.sticky {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  display: flex;
+  align-items: flex-end;
+  padding: 0 var(--gutter) 56px;
+}
+
+/* Dark fade behind the text. It runs 50svh below the screen so it
+   trails off softly instead of leaving a hard edge as the section exits. */
+.sticky::before {
+  content: "";
+  position: absolute;
+  inset: 40% 0 -50svh;
+  z-index: -1;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(0, 0, 0, 0.6) 25%,
+    rgba(0, 0, 0, 0.9) 55%,
+    transparent
+  );
+}
+
+.content {
+  position: relative;
+  font-size: clamp(28px, 2.6vw, 52px);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  opacity: 0;
+  translate: 0 48px;
+  transition:
+    opacity 1s ease,
+    translate 1s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.content.shown {
+  opacity: 1;
+  translate: 0 0;
+}
+
+.label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 1lh; /* exactly one text line, so the pill centres on it */
+  display: flex;
+  align-items: center;
+}
+
+.pill {
+  padding: 6px 18px;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 999px;
+  font-size: 14px;
+  line-height: 1.2;
+  letter-spacing: 0;
+}
+
+.text {
+  --lit: 0;
+  text-indent: 38%;
+}
+
+.word {
+  white-space: nowrap; /* words never split across lines */
+}
+
+/* Each char brightens once --lit (set on scroll) passes its index --i. */
+.char {
+  opacity: clamp(0.2, calc(var(--lit) - var(--i)), 1);
+}
+
+@media (max-width: 768px) {
+  .sticky {
+    padding-bottom: 32px;
+  }
+
+  .content {
+    font-size: 22px;
+  }
+
+  .pill {
+    padding: 4px 12px;
+    font-size: 12px;
+  }
+}
