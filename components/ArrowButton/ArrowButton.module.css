@@ -5,7 +5,7 @@
   --ab-border: 1px;
   --ab-bg: #ffffff;
   --ab-fg: #000000;
-  --ab-accent: var(--color-accent);
+  --ab-accent: var(--color-button);
   --ab-icon: #ffffff;
   --ab-dot: calc(var(--ab-h) - 2 * (var(--ab-border) + var(--ab-gap)));
 

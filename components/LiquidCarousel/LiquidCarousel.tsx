@@ -29,6 +29,8 @@ export type LiquidCarouselProps = CarouselSettings & {
   onEntryComplete?: () => void;
   /** A card was focused (its item index) or the focus closed (null). */
   onFocusChange?: (index: number | null) => void;
+  /** The card nearest the centre changed (its item index). */
+  onCenterChange?: (index: number) => void;
   /** Bump this number to close the focused card from outside. */
   closeRequest?: number;
   controlRef?: RefObject<CarouselControl | null>;
@@ -41,6 +43,7 @@ export default function LiquidCarousel({
   active = true,
   onEntryComplete,
   onFocusChange,
+  onCenterChange,
   closeRequest = 0,
   controlRef,
   style,
@@ -51,10 +54,10 @@ export default function LiquidCarousel({
 
   // Latest settings / callbacks, read by the engine every frame.
   const paramsRef = useRef(makeParams(settings));
-  const hooksRef = useRef<EngineHooks>({ onEntryComplete, onFocusChange });
+  const hooksRef = useRef<EngineHooks>({ onEntryComplete, onFocusChange, onCenterChange });
   useEffect(() => {
     paramsRef.current = makeParams(settings);
-    hooksRef.current = { onEntryComplete, onFocusChange };
+    hooksRef.current = { onEntryComplete, onFocusChange, onCenterChange };
   });
 
   // Only reload textures when the image list actually changes.

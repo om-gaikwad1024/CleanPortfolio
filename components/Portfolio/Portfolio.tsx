@@ -8,6 +8,7 @@ import ProjectDetails from "@/components/ProjectDetails/ProjectDetails";
 import { carousel, carouselMobile, focusLayouts, portfolio } from "@/content/portfolio";
 import { projects } from "@/content/projects";
 import { clamp } from "@/lib/clamp";
+import { navigationTarget } from "@/lib/navigation";
 import { useIsMobile } from "@/lib/useIsMobile";
 import { useMediaQuery } from "@/lib/useMediaQuery";
 import styles from "./Portfolio.module.css";
@@ -73,8 +74,13 @@ export default function Portfolio() {
     const holdForIntro = () => {
       const l = lenisRef.current;
       if (!l) return;
-      const bottom = section.getBoundingClientRect().bottom + window.scrollY;
-      // Jumping well past this section (e.g. a navbar link)? Don't hijack it.
+      const rect = section.getBoundingClientRect();
+      const top = rect.top + window.scrollY;
+      const bottom = rect.bottom + window.scrollY;
+      // A link scroll just passing through (up or down) to another section?
+      // Don't hijack it; the intro still plays, just without the hold.
+      const dest = navigationTarget();
+      if (dest !== null && (dest < top - 2 || dest > bottom - window.innerHeight)) return;
       if (l.targetScroll > bottom + window.innerHeight * 0.5) return;
       holdingRef.current = true;
       l.scrollTo(section, {
@@ -111,7 +117,6 @@ export default function Portfolio() {
 
     // Page scroll → which project is centred (with a rest zone on each).
     let raf = 0;
-    let lastActive = -1;
     const update = () => {
       raf = 0;
       const run = section.offsetHeight - sticky.offsetHeight;
@@ -121,12 +126,6 @@ export default function Portfolio() {
       const f = t - i;
       const pos = i + smooth(clamp((f - DWELL) / (1 - 2 * DWELL), 0, 1));
       controlRef.current?.driveTo(toProject(pos));
-
-      const active = Math.round(pos);
-      if (active !== lastActive && countRef.current) {
-        lastActive = active;
-        countRef.current.textContent = `${pad(active + 1)} / ${pad(n)}`;
-      }
     };
     const schedule = () => {
       if (!raf) raf = requestAnimationFrame(update);
@@ -150,6 +149,11 @@ export default function Portfolio() {
     if (project !== null) setShownIndex(project);
   };
 
+  // Counter follows whichever card is actually centred (also after a drag).
+  const onCenterChange = (itemIndex: number) => {
+    if (countRef.current) countRef.current.textContent = `${pad(toProject(itemIndex) + 1)} / ${pad(n)}`;
+  };
+
   const open = openIndex !== null;
   const showChrome = introDone && !open;
 
@@ -162,6 +166,12 @@ export default function Portfolio() {
     >
       <div ref={stickyRef} className={styles.sticky}>
         <h2 className="sr-only">{portfolio.title}</h2>
+        <span
+          className={play && !open ? `${styles.label} ${styles.shown}` : styles.label}
+          aria-hidden="true"
+        >
+          {portfolio.label}
+        </span>
         <LiquidCarousel
           {...carousel}
           {...(isMobile ? carouselMobile : {})}
@@ -178,6 +188,7 @@ export default function Portfolio() {
             releaseHold();
           }}
           onFocusChange={onFocusChange}
+          onCenterChange={onCenterChange}
           closeRequest={closeRequest}
           controlRef={controlRef}
         />
@@ -189,8 +200,13 @@ export default function Portfolio() {
           onClose={() => setCloseRequest((c) => c + 1)}
         />
         <p className={showChrome ? `${styles.hint} ${styles.shown}` : styles.hint}>
-          <span aria-hidden="true">←</span> {portfolio.hint}{" "}
-          <span aria-hidden="true">→</span>
+          <span>
+            <span aria-hidden="true">↓</span> {portfolio.hint.scroll}
+          </span>
+          <span className={styles.sep} aria-hidden="true" />
+          <span>
+            <span aria-hidden="true">←</span> {portfolio.hint.drag} <span aria-hidden="true">→</span>
+          </span>
         </p>
         <span
           ref={countRef}

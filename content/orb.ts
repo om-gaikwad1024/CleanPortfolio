@@ -52,4 +52,8 @@ export const character = {
   alt: "Character",
   width: 1269,
   height: 1239,
+  // Where the orb's centre sits on the character, as a share of the image's
+  // height from the top. 0.55 ≈ just above the neck: low enough to frame the
+  // shoulders, high enough that the orb's bottom stays hidden behind the body.
+  orbCenter: 0.55,
 };

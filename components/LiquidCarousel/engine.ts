@@ -347,6 +347,8 @@ export interface EngineHooks {
     onEntryComplete?: () => void
     /** A card was focused (its item index) or the focus closed (null). */
     onFocusChange?: (index: number | null) => void
+    /** The card nearest the centre changed (its item index). */
+    onCenterChange?: (index: number) => void
 }
 
 export function createEngine(
@@ -505,6 +507,11 @@ export function createEngine(
     let prevScroll = 0
     let scrollEnergy = 0
     let pendingFocus: { srcIndex: number } | null = null
+    // External drive (page scroll) is applied relative to where the user last
+    // left the carousel, so a drag never makes the next scroll race back.
+    let driveOffset = 0
+    let rebaseDrive = false
+    let lastDrivePos: number | null = null
     let lastInput = performance.now()
     let snapped = false
 
@@ -657,8 +664,12 @@ export function createEngine(
         ready = true
         recomputeTotal()
 
-        scroll = centerForIndex(nearestIndex(scroll))
+        // Card widths only settle once the images (and their aspect ratios)
+        // have loaded, so re-centre the start card with the final layout
+        // rather than snapping to whatever is now nearest the old position.
+        scroll = centerForIndex(pp.startIndex)
         target = scroll
+        lastDrivePos = pp.startIndex
         prevScroll = scroll
         if (!still && pp.entry.enabled) {
             // Park the cards below the frame until play() is called.
@@ -979,6 +990,13 @@ export function createEngine(
         })
     }
 
+    let lastCentered = -1
+    function reportCenter() {
+        if (!centeredPanel || centeredPanel.srcIndex === lastCentered) return
+        lastCentered = centeredPanel.srcIndex
+        getHooks().onCenterChange?.(lastCentered)
+    }
+
     function panelAtPointer(px: number, py: number) {
         for (let i = 0; i < panelRects.length; i++) {
             const r = panelRects[i]
@@ -1059,6 +1077,7 @@ export function createEngine(
         e.preventDefault()
         if (inputLocked()) return
         pendingFocus = null
+        rebaseDrive = true
         target += e.deltaX * pp.wheelSpeed
         lastInput = performance.now()
         snapped = false
@@ -1068,6 +1087,7 @@ export function createEngine(
         suppressClick = false
         readBounds()
         if (!pp.drag || inputLocked()) return
+        rebaseDrive = true
         if (dragging) return
         if (e.button !== 0 && e.pointerType === "mouse") return
         dragging = true
@@ -1184,6 +1204,7 @@ export function createEngine(
         }
         velocity = 0
         target = centerForIndex(nearestIndex(scroll + hit.centerX))
+        rebaseDrive = true
         snapped = true
         pendingFocus = { srcIndex: hit.srcIndex }
         updateCursor()
@@ -1410,6 +1431,7 @@ export function createEngine(
         syncCardColor()
         syncWindows()
         layout()
+        reportCenter()
         refreshHover()
 
         if (pendingFocus && !focusState.active) {
@@ -1472,7 +1494,17 @@ export function createEngine(
         const base = Math.floor(position)
         const a = centerForIndex(base)
         const b = centerForIndex(base + 1)
-        target = a + (b - a) * (position - base)
+        const want = a + (b - a) * (position - base)
+        // First drive after the user moved the carousel: continue from there.
+        // Measured from the last driven position, so this scroll's own step
+        // still counts; anchored to whole cards so it never rests between two.
+        if (rebaseDrive) {
+            const from = lastDrivePos ?? position
+            driveOffset = centerForIndex(nearestIndex(target)) - centerForIndex(Math.round(from))
+            rebaseDrive = false
+        }
+        lastDrivePos = position
+        target = want + driveOffset
         velocity = 0
         pendingFocus = null
         snapped = true

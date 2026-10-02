@@ -22,5 +22,6 @@ export const hero = {
     { left: "72%", top: "54%" },
     { left: "88%", top: "39%" },
   ],
-  signature: "Om Gaikwad",
+  signature: "Om Gaikwad", // alt text for the signature image
+  signatureImage: { src: "/sign.png", width: 2172, height: 724 },
 };

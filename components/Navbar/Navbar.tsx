@@ -7,7 +7,9 @@ import styles from "./Navbar.module.css";
 export default function Navbar() {
   return (
     <nav className={styles.navbar}>
-      <div className={styles.logo}>{nav.logo}</div>
+      <ScrollLink href="#home" className={styles.logo} aria-label={`${nav.logo} — back to top`}>
+        {nav.logo}
+      </ScrollLink>
       <ul className={styles.links}>
         {nav.links.map((link, i) => (
           <li key={link.href} className={styles.item} style={{ "--i": i } as CSSProperties}>

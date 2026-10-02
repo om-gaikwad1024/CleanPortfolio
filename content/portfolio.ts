@@ -3,7 +3,9 @@ import { projects } from "./projects";
 
 export const portfolio = {
   title: "Portfolio",
-  hint: "Scroll or drag to explore",
+  label: "Works",
+  // Below the carousel: page scroll moves on, dragging keeps browsing here.
+  hint: { scroll: "Scroll for next section", drag: "Drag to keep browsing" },
   // Labels for the project details panel shown when a card is opened.
   details: {
     live: "Live site",

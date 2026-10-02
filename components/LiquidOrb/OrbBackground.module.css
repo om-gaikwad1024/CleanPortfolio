@@ -1,8 +1,32 @@
 .background {
+  /* Rendered height of the character image (same rules as CharacterOverlay:
+     capped by max-height, by max-width at its aspect ratio, and by its size). */
+  --img-h: min(
+    var(--img-max-h) * 1%,
+    var(--img-max-w) * 1vw * var(--img-aspect),
+    var(--img-natural-h)
+  );
+
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
   z-index: var(--z-orb);
+  /* Move the orb's centre (screen middle) onto the character's neck:
+     image centre offset + the neck's offset within the image.
+     (% here is of this full-screen layer's height.) */
+  translate: 0 calc((var(--img-top) - 50) * 1% + (var(--orb-center) - 0.5) * var(--img-h));
+}
+
+/* Matches the character's own mobile placement switch. */
+@media (max-width: 767.98px) {
+  .background {
+    --img-h: min(
+      var(--img-max-h-m) * 1%,
+      var(--img-max-w-m) * 1vw * var(--img-aspect),
+      var(--img-natural-h)
+    );
+    translate: 0 calc((var(--img-top-m) - 50) * 1% + (var(--orb-center) - 0.5) * var(--img-h));
+  }
 }

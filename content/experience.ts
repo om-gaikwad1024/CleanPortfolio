@@ -12,6 +12,8 @@ export type ExperienceEntry = {
   description: string; // keep it to ~30 words so the card fits
   result?: string; // short badge, e.g. "1st of 200+"
   link?: { label: string; href: string };
+  /** Shown in a floating card when the entry is hovered (public/expN.png). */
+  image?: string;
 };
 
 export const experience = {
@@ -27,6 +29,7 @@ export const experience = {
 
   entries: [
     {
+      image: "/exp1.png",
       category: "hackathon",
       title: "1st Place, Hack for Hire",
       org: "Anvesana · PES University",
@@ -38,6 +41,7 @@ export const experience = {
     },
     {
       // PLACEHOLDER — replace with your real internship (7 months).
+      image: "/exp2.png",
       category: "work",
       title: "Software Engineering Intern",
       org: "Company Name",
@@ -48,6 +52,7 @@ export const experience = {
       result: "7 months",
     },
     {
+      image: "/exp3.png",
       category: "hackathon",
       title: "Top 3 Finalist, HackElite",
       org: "JSSSTU · PES University",
@@ -59,6 +64,7 @@ export const experience = {
     },
     {
       // PLACEHOLDER — replace with your third hackathon win.
+      image: "/exp4.png",
       category: "hackathon",
       title: "Winner, Hackathon Name",
       org: "Organiser · Location",
@@ -70,6 +76,7 @@ export const experience = {
     },
     {
       // PLACEHOLDER — replace with your freelancing details (10+ months).
+      image: "/exp5.png",
       category: "freelance",
       title: "Freelance Full-Stack Developer",
       org: "Independent",

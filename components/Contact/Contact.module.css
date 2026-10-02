@@ -9,11 +9,13 @@
 }
 
 .content {
+  position: relative;
+  z-index: 2;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
-  padding: calc(var(--nav-h) + 40px) var(--gutter) 80px;
+  padding: calc(var(--nav-h) + 24px) var(--gutter) 56px;
 }
 
 .pill {
@@ -25,69 +27,74 @@
 }
 
 .heading {
-  margin-top: 28px;
-  font-size: clamp(48px, 6.4vw, 112px);
+  margin-top: 32px;
+  max-width: 13em; /* two balanced lines: "Let's build something / as a team" */
+  text-wrap: balance;
+  font-size: clamp(44px, 5.2vw, 96px);
   font-weight: 500;
   line-height: 1;
   letter-spacing: -0.03em;
 }
 
-.line {
+/* The hero signature, same size as on the hero (3.4em of the old type size). */
+.signature {
+  width: 3.4em;
+  margin-top: 8px;
+  font-size: clamp(96px, 10vw, 220px);
+  line-height: 0;
+  pointer-events: none;
+}
+
+.signatureImage {
   display: block;
-}
-
-.script {
-  font-family: var(--font-script);
-  font-size: 1.2em;
-  font-weight: 400;
-  letter-spacing: 0;
-  line-height: 0.8;
-  text-shadow: 0 0 18px rgba(255, 255, 255, 0.35);
-}
-
-.intro {
-  margin-top: 28px;
-  max-width: 36ch;
-  color: rgba(255, 255, 255, 0.68);
-  font-size: 18px;
-  line-height: 1.5;
+  width: 100%;
+  height: auto;
 }
 
 .email {
-  margin-top: 44px;
+  margin-top: 32px;
 }
 
 .links {
-  margin-top: 28px;
+  margin-top: 24px;
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
 }
 
-/* Dithered character; full height of the section. */
+/* Dithered art; full height of the section. */
 .art {
   position: relative;
+  z-index: 0;
   height: 100svh;
 }
 
-.hint {
+/* Soft dark edges so the art melts into the page instead of reading as a
+   picture: a deep fade at the top, a lighter one on the side facing the text. */
+.art::after {
+  content: "";
   position: absolute;
-  right: var(--gutter);
-  bottom: 40px;
-  color: var(--color-muted);
-  font-size: 12px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  inset: 0;
   pointer-events: none;
+  background:
+    linear-gradient(to bottom, var(--color-bg) 0%, rgba(0, 0, 0, 0.6) 12%, transparent 28%),
+    linear-gradient(to right, var(--color-bg) 0%, transparent 18%);
 }
 
-/* Content rises in as the section scrolls into view (no JS; browsers without
-   scroll-driven animations just show it). */
+/* Scroll-driven entrances (no JS; browsers without support just show it):
+   content rises in, and the signature writes itself left to right. Both
+   finish once fully on screen — reachable even though this is the last section. */
 @supports (animation-timeline: view()) {
   .reveal {
     animation: rise linear both;
     animation-timeline: view();
     animation-range: entry calc(10% + var(--i) * 6%) entry calc(60% + var(--i) * 6%);
+  }
+
+  .signature {
+    animation: sign linear both;
+    animation-timeline: view();
+    animation-range: entry 15% entry 100%;
   }
 }
 
@@ -99,6 +106,15 @@
   }
 }
 
+@keyframes sign {
+  from {
+    clip-path: inset(-10% 100% -10% -4%);
+  }
+  to {
+    clip-path: inset(-10% -4%);
+  }
+}
+
 /* Narrower screens: art on top, text underneath. */
 @media (max-width: 1023.98px) {
   .contact {
@@ -107,15 +123,18 @@
 
   .art {
     order: -1;
-    height: 52svh;
+    height: 46svh;
   }
 
-  .hint {
-    bottom: 16px;
+  /* Stacked: fade the top and also the bottom, where the text begins. */
+  .art::after {
+    background:
+      linear-gradient(to bottom, var(--color-bg) 0%, rgba(0, 0, 0, 0.6) 14%, transparent 32%),
+      linear-gradient(to top, var(--color-bg) 0%, transparent 22%);
   }
 
   .content {
-    padding: 8px var(--gutter) 72px;
+    padding: 0 var(--gutter) 56px;
   }
 }
 
@@ -125,7 +144,8 @@
     font-size: 12px;
   }
 
-  .intro {
-    font-size: 16px;
+  /* Same as the hero's mobile signature size. */
+  .signature {
+    font-size: 84px;
   }
 }

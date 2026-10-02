@@ -3,6 +3,8 @@
 import { Fragment, useEffect, useRef, useState, type CSSProperties } from "react";
 import { about } from "@/content/about";
 import { clamp } from "@/lib/clamp";
+import OrbNudge from "@/components/OrbNudge/OrbNudge";
+import TechMarquee from "@/components/TechMarquee/TechMarquee";
 import styles from "./About.module.css";
 
 // Splits text into words of [char, globalIndex] pairs, plus the total char count.
@@ -79,6 +81,8 @@ export default function About() {
   return (
     <section id="about" className={styles.about} ref={sectionRef}>
       <div className={styles.sticky} ref={stickyRef}>
+        <OrbNudge visible={shown} />
+        <TechMarquee icons={about.stack} label={about.stackLabel} targetRef={sectionRef} />
         <div
           className={shown ? `${styles.content} ${styles.shown}` : styles.content}
           ref={contentRef}

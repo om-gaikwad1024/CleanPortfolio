@@ -24,6 +24,31 @@
   overflow: hidden;
 }
 
+/* "Works" pill, top-left under the navbar. */
+.label {
+  position: absolute;
+  z-index: 2;
+  top: calc(var(--nav-h) + 20px);
+  left: var(--gutter);
+  padding: 6px 18px;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 999px;
+  color: var(--color-fg);
+  font-size: 14px;
+  line-height: 1.2;
+  pointer-events: none;
+  opacity: 0;
+  translate: 0 -8px;
+  transition:
+    opacity 0.6s ease,
+    translate 0.6s var(--ease-out);
+}
+
+.label.shown {
+  opacity: 1;
+  translate: 0 0;
+}
+
 .hint,
 .count {
   position: absolute;
@@ -43,6 +68,16 @@
 .hint {
   left: 50%;
   translate: -50% 12px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.sep {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: currentColor;
 }
 
 .count {
@@ -60,7 +95,31 @@
   translate: 0 0;
 }
 
+/* Narrow: hint stacks on two lines at the left, counter stays right. */
+@media (max-width: 900px) {
+  .hint {
+    left: var(--gutter);
+    translate: 0 12px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  .hint.shown {
+    translate: 0 0;
+  }
+
+  .sep {
+    display: none;
+  }
+}
+
 @media (max-width: 768px) {
+  .label {
+    padding: 4px 12px;
+    font-size: 12px;
+  }
+
   .hint,
   .count {
     bottom: 28px;

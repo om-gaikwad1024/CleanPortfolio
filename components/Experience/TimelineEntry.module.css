@@ -76,6 +76,36 @@
   letter-spacing: -0.02em;
 }
 
+.roll {
+  /* Gap between the title and its copy, larger than any descender (g, p, y)
+     or ascender poking out of the line box, so neither is ever left visible. */
+  --roll-gap: 0.4em;
+  --roll-pad: 0.12em; /* room for the visible title's own descenders */
+  position: relative;
+  display: block;
+  overflow: hidden;
+  padding-bottom: var(--roll-pad);
+}
+
+.rollText,
+.rollCopy {
+  display: block;
+  transition: translate 0.55s var(--ease-out);
+}
+
+.rollCopy {
+  position: absolute;
+  /* Lands exactly where the title was once both have rolled up. */
+  top: calc(100% - var(--roll-pad) + var(--roll-gap));
+  left: 0;
+  width: 100%;
+}
+
+.card:hover .rollText,
+.card:hover .rollCopy {
+  translate: 0 calc(-100% - var(--roll-gap));
+}
+
 .org {
   margin-top: 6px;
   color: var(--color-muted);

@@ -6,6 +6,7 @@
   --color-fg: #fff;
   --color-muted: rgba(255, 255, 255, 0.5);
   --color-accent: #ff3a32; /* same red as the orb */
+  --color-button: #c50f0f; /* arrow buttons' inner circle / hover fill */
 
   /* Type */
   --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,

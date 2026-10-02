@@ -1,0 +1,53 @@
+/* Full-width strip; logos dissolve towards both edges of the screen. */
+.marquee {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 36px;
+  height: 40px;
+  overflow: hidden;
+  pointer-events: none;
+  mask-image: linear-gradient(to right, transparent, #000 22%, #000 78%, transparent);
+}
+
+.track {
+  display: flex;
+  gap: 88px;
+  width: max-content;
+  height: 100%;
+  padding-left: var(--gutter);
+  will-change: translate;
+}
+
+/* Dark grey at rest, brightening as --glow (0–1) rises near the centre. */
+.item {
+  --glow: 0;
+  flex: none;
+  width: 40px;
+  height: 40px;
+  color: color-mix(in srgb, #d8d8d8 calc(var(--glow) * 100%), #3a3a3a);
+}
+
+.icon {
+  display: block;
+  width: 100%;
+  height: 100%;
+  fill: currentColor;
+}
+
+@media (max-width: 768px) {
+  .marquee {
+    bottom: 24px;
+    height: 28px;
+    mask-image: linear-gradient(to right, transparent, #000 15%, #000 85%, transparent);
+  }
+
+  .track {
+    gap: 48px;
+  }
+
+  .item {
+    width: 28px;
+    height: 28px;
+  }
+}

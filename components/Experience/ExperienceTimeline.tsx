@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useRef, type CSSProperties } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
+import HoverPreview from "@/components/HoverPreview/HoverPreview";
 import TimelineEntry from "./TimelineEntry";
 import { experience } from "@/content/experience";
 import { clamp } from "@/lib/clamp";
@@ -25,6 +26,9 @@ export default function ExperienceTimeline() {
   const yearRef = useRef<HTMLSpanElement>(null);
   const countRef = useRef<HTMLSpanElement>(null);
   const entryRefs = useRef<(HTMLLIElement | null)[]>([]);
+  // Hovered entry (for the floating image), and the last one shown.
+  const [hovered, setHovered] = useState<number | null>(null);
+  const [shown, setShown] = useState(0);
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -124,6 +128,7 @@ export default function ExperienceTimeline() {
           </span>
         </p>
         <span className={styles.needle} aria-hidden="true" />
+        <HoverPreview images={entries.map((e) => e.image)} active={hovered} shown={shown} />
         <ol ref={trackRef} className={styles.track}>
           {entries.map((entry, i) => (
             <TimelineEntry
@@ -134,6 +139,10 @@ export default function ExperienceTimeline() {
               entry={entry}
               side={i % 2 === 0 ? "above" : "below"}
               yearStart={i === 0 || entries[i - 1].year !== entry.year}
+              onHover={(on) => {
+                setHovered((h) => (on ? i : h === i ? null : h));
+                if (on) setShown(i);
+              }}
             />
           ))}
         </ol>

@@ -1,0 +1,42 @@
+.preview {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 3;
+  width: 320px;
+  aspect-ratio: 16 / 10;
+  border-radius: 14px;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 0;
+  scale: 0.85;
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.55);
+  transition:
+    opacity 0.35s ease,
+    scale 0.5s var(--ease-out);
+  will-change: translate;
+}
+
+.visible {
+  opacity: 1;
+  scale: 1;
+}
+
+/* Each image slides in from below (later item) or above (earlier item). */
+.slide {
+  position: absolute;
+  inset: 0;
+  translate: 0 var(--y);
+  transition: translate 0.6s var(--ease-out);
+}
+
+.slide img {
+  object-fit: cover;
+}
+
+/* No hover on touch screens. */
+@media (hover: none) {
+  .preview {
+    display: none;
+  }
+}

@@ -1,44 +1,40 @@
+/* Sized in em so it scales like the typed signature did: the font-size is the
+   old type size, and the image is 3.4em wide (its glow included). */
 .signature {
-  /* Swash room for the reveal: the clip extends this far past the text box. */
-  --swash-y: 0.2em;
-  --swash-x: 0.3em;
+  --reveal-pad: 0.06em; /* clip reaches slightly past the box so the glow isn't cut */
 
   position: absolute;
   right: var(--gutter);
-  bottom: 0.05em;
-  font-family: var(--font-script);
+  bottom: 0.02em;
+  width: 3.4em;
   font-size: clamp(96px, 10vw, 220px);
-  line-height: 1;
-  white-space: nowrap;
-  text-shadow: 0 0 18px rgba(255, 255, 255, 0.35);
+  line-height: 0;
   animation: sign 2.4s cubic-bezier(0.65, 0, 0.35, 1) 0.4s both;
 }
 
-/* Negative insets reach past the box (instead of padding), so the swashes
-   aren't cropped and the box never overflows the viewport. */
+.image {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
 @keyframes sign {
   from {
     clip-path: inset(
-      calc(-1 * var(--swash-y))
-      calc(100% + var(--swash-x))
-      calc(-1 * var(--swash-y))
-      calc(-1 * var(--swash-x))
+      calc(-1 * var(--reveal-pad))
+      calc(100% + var(--reveal-pad))
+      calc(-1 * var(--reveal-pad))
+      calc(-1 * var(--reveal-pad))
     );
   }
   to {
-    clip-path: inset(calc(-1 * var(--swash-y)) calc(-1 * var(--swash-x)));
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .signature {
-    animation: none;
+    clip-path: inset(calc(-1 * var(--reveal-pad)));
   }
 }
 
 @media (max-width: 768px) {
   .signature {
     font-size: 84px;
-    bottom: calc(150px + var(--swash-y));
+    bottom: 150px;
   }
 }
