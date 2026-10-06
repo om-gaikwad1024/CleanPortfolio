@@ -1,6 +1,32 @@
-.experience {
+/* Latest project + Experience timeline share one pinned stage: 2.6 screens for
+   the latest project (the ruler slides in during its exit) plus (entries − 1)
+   slots of ruler travel. Transparent, on the site's black backdrop. */
+.journey {
+  --latest-run: 260svh;
+  --slot: clamp(380px, 36vw, 560px);
   position: relative;
   z-index: var(--z-content);
-  background: var(--color-bg);
+  height: calc(100svh + var(--latest-run) + (var(--n) - 1) * var(--slot));
   color: var(--color-fg);
+}
+
+.stage {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  overflow: hidden;
+}
+
+/* Phones: no pinning — the card, then the vertical timeline list. */
+@media (max-width: 767.98px) {
+  .journey {
+    height: auto;
+    padding-bottom: 96px;
+  }
+
+  .stage {
+    position: static;
+    height: auto;
+    overflow: visible;
+  }
 }

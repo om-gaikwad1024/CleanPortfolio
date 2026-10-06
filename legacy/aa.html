@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Smooth Scroll Projects</title>
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { background: #000; }
+  body {
+    overflow-x: hidden;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    color: #fff;
+  }
+
+  /* Tall track you scroll through; the stage sticks to the screen inside it */
+  .track { position: relative; }
+  .stage {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  /* The card = image + text, moves as one piece */
+  .card {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    display: flex;
+    align-items: center;
+    will-change: transform, filter;
+    transform: translate3d(-300vw, -50%, 0); /* start off screen */
+  }
+  .card.text-left { flex-direction: row-reverse; }
+  .card.stacked { flex-direction: column; align-items: flex-start; }
+
+  .image-box {
+    flex-shrink: 0;
+    overflow: hidden;
+    background: #111;
+  }
+  .image-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    user-select: none;
+    pointer-events: none;
+  }
+
+  .text-box { flex-shrink: 0; }
+  .tag {
+    font-size: 13px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.5);
+    margin-bottom: 14px;
+  }
+  .title {
+    font-size: clamp(26px, 3.2vw, 44px);
+    font-weight: 600;
+    line-height: 1.1;
+    margin-bottom: 16px;
+  }
+  .desc {
+    font-size: clamp(14px, 1.2vw, 17px);
+    line-height: 1.65;
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  /* Empty section after the projects have gone */
+  .empty { height: 100vh; }
+</style>
+</head>
+<body>
+
+  <div class="track" id="track">
+    <div class="stage" id="stage"></div>
+  </div>
+
+  <section class="empty"></section>
+
+<script>
+  /* ================= SETTINGS ================= */
+  const CONFIG = {
+    projects: [
+      {
+        image: "public/image.png",
+        tag: "Project 01",
+        title: "Your Project Title",
+        description:
+          "A short description of the project goes here. Talk about what it is, what problem it solves, and the tools or ideas behind it."
+      }
+      // add more projects like:
+      // { image: "image2.png", tag: "Project 02", title: "Another Project", description: "..." }
+    ],
+
+    imageWidth: 400,        // px
+    imageHeight: 400,       // px
+    textWidth: 360,         // px
+    textGap: 56,            // space between image and text
+    textPosition: "right",  // "right" or "left" of the image
+    stackBelow: 760,        // below this screen width, text goes under the image
+
+    direction: "right",     // "right" = comes in from right, "left" = from left
+    smoothness: 7,          // 0 (snappy) to 10 (very floaty)
+    radius: 16,             // image corner radius in px
+    dim: 10,                // 0 to 10, how dark it gets while shrinking away
+    background: "#000000",
+    scrollPerProject: 300,  // how much scrolling (in vh) one project takes
+    gap: 0.1,               // empty screen time before/after each project (0 to 0.3)
+    hold: 0.2               // how long the project stays centered (0 to 0.5)
+  };
+  /* ============================================ */
+
+  const MAX_SCALE = 2.5;
+  const MIN_SCALE = 0.1;
+  const clamp = (v, min, max) => Math.min(max, Math.max(min, v));
+
+  const track = document.getElementById("track");
+  const stage = document.getElementById("stage");
+
+  document.body.style.background = CONFIG.background;
+  stage.style.background = CONFIG.background;
+  track.style.height =
+    (CONFIG.projects.length * CONFIG.scrollPerProject + 100) + "vh";
+
+  const ease = 0.15 - (clamp(CONFIG.smoothness, 0, 10) / 10) * 0.13;
+  const dimAmount = (clamp(CONFIG.dim, 0, 10) / 10) * 0.85;
+  const flip = CONFIG.direction === "left";
+
+  // Build cards
+  const cards = CONFIG.projects.map((p) => {
+    const card = document.createElement("div");
+    card.className = "card";
+    if (CONFIG.textPosition === "left") card.classList.add("text-left");
+
+    const imageBox = document.createElement("div");
+    imageBox.className = "image-box";
+    imageBox.style.borderRadius = CONFIG.radius + "px";
+    const img = document.createElement("img");
+    img.src = p.image;
+    img.alt = p.title || "";
+    img.draggable = false;
+    imageBox.appendChild(img);
+
+    const textBox = document.createElement("div");
+    textBox.className = "text-box";
+    textBox.innerHTML = `
+      ${p.tag ? `<div class="tag"></div>` : ""}
+      <h2 class="title"></h2>
+      <p class="desc"></p>
+    `;
+    if (p.tag) textBox.querySelector(".tag").textContent = p.tag;
+    textBox.querySelector(".title").textContent = p.title || "";
+    textBox.querySelector(".desc").textContent = p.description || "";
+
+    card.appendChild(imageBox);
+    card.appendChild(textBox);
+    stage.appendChild(card);
+
+    return { card, imageBox, textBox, current: -1 };
+  });
+
+  // Sizes
+  let W = 0;
+  let cardW = 0;
+  function measure() {
+    W = stage.clientWidth;
+    const stacked = W < CONFIG.stackBelow;
+
+    let imgW, imgH, textW, gapPx;
+    if (stacked) {
+      imgW = Math.min(CONFIG.imageWidth, W * 0.85);
+      imgH = imgW * (CONFIG.imageHeight / CONFIG.imageWidth);
+      textW = imgW;
+      gapPx = 24;
+      cardW = imgW;
+    } else {
+      const full = CONFIG.imageWidth + CONFIG.textGap + CONFIG.textWidth;
+      const f = Math.min(1, (W * 0.9) / full);
+      imgW = CONFIG.imageWidth * f;
+      imgH = CONFIG.imageHeight * f;
+      textW = CONFIG.textWidth * f;
+      gapPx = CONFIG.textGap * f;
+      cardW = imgW + gapPx + textW;
+    }
+
+    cards.forEach((c) => {
+      c.card.classList.toggle("stacked", stacked);
+      c.card.style.width = cardW + "px";
+      c.card.style.gap = gapPx + "px";
+      c.imageBox.style.width = imgW + "px";
+      c.imageBox.style.height = imgH + "px";
+      c.textBox.style.width = textW + "px";
+    });
+  }
+  measure();
+  window.addEventListener("resize", measure);
+
+  // Scroll progress (0..1) for one project -> phase:
+  // -1 = off screen (coming in), 0 = centered, 1 = off screen (gone)
+  function phaseFor(local) {
+    const g = CONFIG.gap;
+    const h = CONFIG.hold;
+    const inEnd = 0.5 - h / 2;
+    const outStart = 0.5 + h / 2;
+    const outEnd = 1 - g;
+
+    if (local <= g) return -1;
+    if (local < inEnd) return -1 + (local - g) / (inEnd - g);
+    if (local <= outStart) return 0;
+    if (local < outEnd) return (local - outStart) / (outEnd - outStart);
+    return 1;
+  }
+
+  let last = 0;
+  function tick(now) {
+    requestAnimationFrame(tick);
+
+    const dt = last ? Math.min((now - last) / 1000, 0.1) : 1 / 60;
+    last = now;
+    if (W <= 0) return;
+
+    const scrollable = track.offsetHeight - stage.offsetHeight;
+    const p = scrollable > 0
+      ? clamp(-track.getBoundingClientRect().top / scrollable, 0, 1)
+      : 0;
+    const progress = p * cards.length;
+
+    const k = 1 - Math.pow(1 - ease, dt * 60);
+    const travel = W * 1.15;
+    const half = W / 2;
+
+    cards.forEach((c, i) => {
+      const target = phaseFor(clamp(progress - i, 0, 1));
+      c.current += (target - c.current) * k;
+
+      // distance of card center from screen center (same math as original)
+      const distance = -c.current * travel;
+      const x = half + distance - cardW / 2;
+
+      let scale, push;
+      if (distance > 0) {
+        scale = Math.min(MAX_SCALE, 1 + distance / W);
+        push = (scale - 1) * cardW * 0.75;
+      } else {
+        scale = Math.max(MIN_SCALE, 1 + distance / W);
+        push = 0;
+      }
+
+      const left = flip ? W - cardW - (x + push) : x + push;
+      c.card.style.transform = `translate3d(${left}px, -50%, 0) scale(${scale})`;
+
+      if (dimAmount > 0 && scale < 1) {
+        const t = (1 - scale) / Math.max(0.001, 1 - MIN_SCALE);
+        c.card.style.filter = `brightness(${1 - t * dimAmount})`;
+      } else {
+        c.card.style.filter = "none";
+      }
+    });
+  }
+  requestAnimationFrame(tick);
+</script>
+</body>
+</html>

@@ -1,16 +1,5 @@
-/* Pinned for (entries − 1) slots of scrolling; 1px of scroll = 1px of travel. */
-.timeline {
-  --slot: clamp(380px, 36vw, 560px);
-  position: relative;
-  height: calc(100svh + (var(--n) - 1) * var(--slot));
-}
-
-.sticky {
-  position: sticky;
-  top: 0;
-  height: 100svh;
-  overflow: hidden;
-}
+/* Everything here sits on Experience's pinned stage. --chrome (set from
+   Experience) fades the needle, header and big year in as the ruler arrives. */
 
 /* Current entry's year, huge and outlined behind everything. */
 .bgYear {
@@ -26,6 +15,7 @@
   line-height: 1;
   pointer-events: none;
   user-select: none;
+  opacity: var(--chrome, 1);
 }
 
 .header {
@@ -39,6 +29,7 @@
   font-size: 13px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
+  opacity: var(--chrome, 1);
 }
 
 /* Centre needle: whichever entry sits on it is the active one. */
@@ -49,6 +40,7 @@
   width: 1px;
   height: 72px;
   background: var(--color-accent);
+  opacity: var(--chrome, 1);
 }
 
 /* The track starts and ends with an entry centred on the needle. */
@@ -77,17 +69,6 @@
 
 /* Phones: no pinning — a vertical list beside a vertical ruler. */
 @media (max-width: 767.98px) {
-  .timeline {
-    height: auto;
-    padding: 20px var(--gutter) 96px;
-  }
-
-  .sticky {
-    position: static;
-    height: auto;
-    overflow: visible;
-  }
-
   .bgYear,
   .needle {
     display: none;
@@ -95,13 +76,14 @@
 
   .header {
     position: static;
-    margin-bottom: 16px;
+    margin: 0 var(--gutter) 16px;
   }
 
   .track {
     position: relative;
     inset: auto;
     display: block;
+    margin: 0 var(--gutter);
     padding: 0;
   }
 

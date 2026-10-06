@@ -30,7 +30,7 @@
   margin-top: 32px;
   max-width: 13em; /* two balanced lines: "Let's build something / as a team" */
   text-wrap: balance;
-  font-size: clamp(44px, 5.2vw, 96px);
+  font-size: clamp(44px, 3.2vw, 96px);
   font-weight: 500;
   line-height: 1;
   letter-spacing: -0.03em;
@@ -52,7 +52,7 @@
 }
 
 .email {
-  margin-top: 32px;
+  /* margin-top: 32px; */
 }
 
 .links {

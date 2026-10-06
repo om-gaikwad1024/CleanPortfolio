@@ -58,9 +58,12 @@ export default function ProjectDetails({ project, index, total, open, onClose }:
             ))}
           </ul>
           <div className={`${styles.item} ${styles.links}`} style={order(4)}>
-            <ArrowButton href={project.live} target="_blank" rel="noopener noreferrer">
-              {labels.live}
-            </ArrowButton>
+            {/* Only when the project actually has a live link. */}
+            {project.live?.trim() && (
+              <ArrowButton href={project.live} target="_blank" rel="noopener noreferrer">
+                {labels.live}
+              </ArrowButton>
+            )}
             <ArrowButton
               href={project.github}
               variant="outline"

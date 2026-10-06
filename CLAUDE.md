@@ -6,7 +6,7 @@
 - Next.js App Router + TypeScript. Deployed on Vercel; `npm run lint` and `npm run build` must pass.
 - Styling: plain CSS Modules, one `.module.css` per component. Shared variables/reset only in `app/globals.css`.
 - Every visual piece is its own component in `components/<Name>/`.
-- Text and settings (nav, hero copy, services, about text + tech stack, orb config, projects, carousel, experience, contact) live in `content/`, never hardcoded in components. Projects: `content/projects.ts` (image N = `public/portN.png`).
+- Text and settings (nav, hero copy, services, about text + tech stack, orb config, projects, carousel, latest project, experience, contact) live in `content/`, never hardcoded in components. Projects: `content/projects.ts` (image N = `public/portN.png`).
 - Orb shader lives in `components/LiquidOrb/shader.ts`. Don't open it unless the task is about the orb.
 - Carousel engine/shader (`components/LiquidCarousel/engine.ts`, `lens.shader.ts`): don't open unless the task is about the carousel. Source reference: `legacy/carousel.txt`.
 - Dither shader (`components/DitherReveal/dither.shader.ts`, from `legacy/dither.txt`): don't open unless the task is about the dither effect.
@@ -37,3 +37,4 @@
 - [x] 20. Smooth link scrolling (logo → home), #8a0202 button fill, signature image, orb nudge in About, title-roll fix, drag-aware portfolio scroll + new hint
 - [x] 21. Tech-stack logo strip in About (scroll-driven, right-to-left, bright at centre, fades at edges)
 - [x] 22. Contact redesign: "Let's build something as a team" signed with the hero signature, no footer row, no bottom gap
+- [x] 23. Latest project + Experience in one pinned journey (Experience.tsx drives both): card glides in, holds 1 screen with a "scroll to Experience" bar, shrinks left as the ruler slides in; latest project has stack chips + links

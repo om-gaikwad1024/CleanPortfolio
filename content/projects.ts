@@ -7,7 +7,8 @@ export type Project = {
   description: string;
   stack: string[];
   github: string;
-  live: string;
+  /** Optional: leave it out (or empty) and the "Live site" button is hidden. */
+  live?: string;
   image: string;
 };
 
@@ -15,82 +16,81 @@ const GITHUB = "https://github.com/om-gaikwad1024";
 
 export const projects: Project[] = [
   {
-    title: "Pulseboard",
+    title: "MindOS",
     description:
-      "A real-time analytics dashboard that streams product metrics over WebSockets, renders thousands of live data points smoothly, and lets teams build shareable views without writing a single query.",
-    stack: ["Next.js", "TypeScript", "WebSockets", "PostgreSQL"],
+      "A personal operating system that unifies tasks, knowledge, journaling, finances, and goals, with Claude connected through a custom MCP server that reads live data and provides context-aware advice across sessions.",
+    stack: ["Next.js 14", "TypeScript", "PostgreSQL", "Prisma", "Claude API", "MCP", "Tailwind CSS", "Recharts", "Vercel"],
     github: `${GITHUB}/pulseboard`,
-    live: "https://example.com",
     image: "/port1.png",
   },
   {
-    title: "Kanji Flow",
+    title: "Community Water Quality Assessor",
     description:
-      "A spaced-repetition app for learning Japanese kanji, with stroke-order animations, handwriting recognition on canvas, and adaptive review schedules that keep daily sessions short but effective for busy learners.",
-    stack: ["React", "Canvas API", "Node.js", "MongoDB"],
+      "A full-stack groundwater monitoring platform that analyzes real water test parameters, predicts contamination spread, and provides instant safety assessments and remediation guidance for groundwater-dependent communities.",
+    stack: ["React", "Flask", "XGBoost", "Scikit-learn", "PCA", "SQLite", "Recharts", "React Leaflet"],
     github: `${GITHUB}/kanji-flow`,
     live: "https://example.com",
     image: "/port2.png",
   },
   {
-    title: "Orbit CMS",
+    title: "Anvaya",
     description:
-      "A headless content platform with a block-based editor, role-based permissions and instant previews, designed so marketing teams can publish landing pages while developers keep full control of components.",
-    stack: ["Next.js", "GraphQL", "Prisma", "AWS S3"],
+      "A 3D interactive platform making Ayurvedic knowledge and yoga engaging through immersive plant showcases, guided yoga training, interactive quizzes, and a dynamic web experience.",
+    stack: ["React", "Node.js", "Express", "MongoDB", "Three.js", "Spline", "JWT"],
     github: `${GITHUB}/orbit-cms`,
     live: "https://example.com",
     image: "/port3.png",
   },
-  {
-    title: "Tidepool",
+  { 
+    title: "Beneficial Ownership Explorer",
     description:
-      "A collaborative budgeting tool for shared households that splits expenses fairly, syncs bank transactions automatically, and turns monthly spending into clear, friendly charts everyone in the home understands.",
-    stack: ["React Native", "Firebase", "Plaid", "D3.js"],
-    github: `${GITHUB}/tidepool`,
-    live: "https://example.com",
+      "A graph-based investigation tool that traces ultimate beneficial ownership across offshore companies, revealing hidden control structures through chains of intermediate entities using ICIJ Offshore Leaks records.",
+    stack: ["Next.js", "TypeScript", "Neo4j", "Cytoscape.js", "Dagre", "CognoDB", "Vercel"],
+    github: `https://github.com/om-gaikwad1024/beneficial-ownership-explorer`,
+    live: "https://beneficial-ownership-explorer.vercel.app/",
     image: "/port4.png",
   },
   {
-    title: "Glyph Studio",
+    title: "EventHive",
     description:
-      "A browser-based generative art playground where shaders are edited live, parameters become sliders automatically, and finished pieces export as high-resolution prints or short looping videos for social sharing.",
-    stack: ["Three.js", "GLSL", "Vite", "Web Workers"],
+      "A modern mobile event discovery platform that helps users find nearby events, explore locations on an interactive map, and register seamlessly through a polished, community-focused experience.",
+    stack: ["React Native", "Expo", "TypeScript", "Firebase", "NativeWind"],
     github: `${GITHUB}/glyph-studio`,
     live: "https://example.com",
     image: "/port5.png",
   },
   {
-    title: "Courier API",
+    title: "Enterprise RAG Intelligence System",
     description:
-      "A resilient notification service that delivers email, SMS and push messages through one API, with retries, templating, delivery analytics and rate limiting built to handle millions of events daily.",
-    stack: ["Go", "Redis", "Kafka", "Docker"],
+      "A production-grade enterprise RAG system that processes heterogeneous data, enforces role-based access at the vector layer, and delivers grounded, cited responses with complete retrieval traceability.",
+    stack: ["FastAPI", "Python", "Qdrant", "Groq", "Sentence Transformers", "FlagEmbedding", "PyTorch"],
     github: `${GITHUB}/courier-api`,
     live: "https://example.com",
     image: "/port6.png",
   },
   {
-    title: "Fieldnotes",
+    title: "CipherTrust",
     description:
-      "An offline-first note-taking app for researchers that captures photos, audio and location with every entry, syncs when back online, and turns scattered field observations into searchable, tagged collections.",
-    stack: ["PWA", "IndexedDB", "React", "Supabase"],
+      "A multi-tenant secure data pipeline protecting real-time drone threat data across defense, aviation, and critical infrastructure domains with encrypted streaming, authentication, and concurrent data handling.",
+    stack: ["Go", "React", "AES-256-GCM", "JWT", "WebSockets", "Gorilla Mux", "Vite", "Tailwind CSS"],
     github: `${GITHUB}/fieldnotes`,
     live: "https://example.com",
     image: "/port7.png",
   },
   {
-    title: "Shelf Scout",
+    title: "REDGIT",
     description:
-      "A computer-vision inventory assistant that scans store shelves from a phone camera, detects missing or misplaced products, and sends restocking tasks to staff before customers ever notice the gaps.",
-    stack: ["Python", "PyTorch", "FastAPI", "React"],
+      "A Git implementation built from scratch in Go, recreating core version-control functionality including content-addressable storage, branching, merging, and repository management.",
+    stack: ["Go"],
     github: `${GITHUB}/shelf-scout`,
     live: "https://example.com",
     image: "/port8.png",
   },
   {
-    title: "Metronome",
+    title: "Movie Recommender System",
     description:
-      "A lightweight uptime and performance monitor that checks endpoints from multiple regions, alerts the right person on failure, and publishes a clean public status page with incident history and timelines.",
-    stack: ["Node.js", "Cloudflare Workers", "SQLite", "Tailwind"],
+      "A movie discovery and recommendation platform providing details for films across languages, eras, and release stages, with similar-movie recommendations based on the movie currently being explored.",
+    stack: ["Flask", "Python", "TMDB API", "Scikit-learn", "NLTK", "Pandas", "NumPy", "BeautifulSoup"],
     github: `${GITHUB}/metronome`,
     live: "https://example.com",
     image: "/port9.png",

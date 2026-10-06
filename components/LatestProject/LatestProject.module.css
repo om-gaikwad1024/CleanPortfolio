@@ -1,0 +1,142 @@
+/* Wide screens: absolutely placed on Experience's pinned stage; its position,
+   scale and brightness come from the scroll loop, its sizes from --img-w,
+   --img-h, --text-w and --gap (set to fit the screen). */
+.card {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: var(--gap, 56px);
+  transform: translate3d(-300vw, -50%, 0); /* off screen until placed */
+  will-change: transform, filter;
+  visibility: hidden;
+}
+
+.imageBox {
+  position: relative;
+  flex: none;
+  width: var(--img-w, 560px);
+  height: var(--img-h, 350px);
+  overflow: hidden;
+  border-radius: 16px;
+  background: #111;
+}
+
+.image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  user-select: none;
+  pointer-events: none;
+}
+
+.text {
+  flex: none;
+  width: var(--text-w, 360px);
+}
+
+.tag {
+  margin-bottom: 14px;
+  color: var(--color-muted);
+  font-size: 13px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.title {
+  margin-bottom: 16px;
+  font-size: clamp(26px, 3.2vw, 44px);
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.desc {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: clamp(14px, 1.2vw, 17px);
+  line-height: 1.65;
+}
+
+.stack {
+  margin-top: 18px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  list-style: none;
+}
+
+.chip {
+  padding: 5px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 999px;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.links {
+  margin-top: 22px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+/* "Scroll to Experience" — the bar fills while the project is held and is
+   full exactly when it starts to move on. */
+.next {
+  margin-top: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  color: var(--color-muted);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.bar {
+  position: relative;
+  height: 2px;
+  overflow: hidden;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.fill {
+  position: absolute;
+  inset: 0;
+  background: var(--color-accent);
+  transform-origin: left;
+  scale: 0 1;
+}
+
+/* Phones: no pinned journey — a plain card above the vertical timeline. */
+@media (max-width: 767.98px) {
+  .card {
+    position: static;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 22px;
+    margin: 0 var(--gutter) 56px;
+    padding-top: calc(var(--nav-h) + 16px);
+    transform: none;
+    visibility: visible;
+  }
+
+  .imageBox {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 10;
+  }
+
+  .text {
+    width: 100%;
+  }
+
+  .next {
+    display: none;
+  }
+}

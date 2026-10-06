@@ -37,7 +37,8 @@ export default function OrbNudge({ visible }: { visible: boolean }) {
     <div className={cls} aria-hidden="true">
       <svg className={styles.arrow} viewBox="0 0 120 80" fill="none">
         <path d="M112 70 C 92 66, 58 58, 38 30 C 32 22, 28 14, 26 6" />
-        <path d="M14 16 L26 4 L34 19" />
+        {/* Head: two wings at ±35° to the curve's direction, meeting at its tip. */}
+        <path d="M21.3 18.1 L26 6 L35.8 14.5" />
       </svg>
       <span className={styles.text}>{phase === "ask" ? about.nudge.text : about.nudge.done}</span>
     </div>
