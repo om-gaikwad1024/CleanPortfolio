@@ -38,3 +38,4 @@
 - [x] 21. Tech-stack logo strip in About (scroll-driven, right-to-left, bright at centre, fades at edges)
 - [x] 22. Contact redesign: "Let's build something as a team" signed with the hero signature, no footer row, no bottom gap
 - [x] 23. Latest project + Experience in one pinned journey (Experience.tsx drives both): card glides in, holds 1 screen with a "scroll to Experience" bar, shrinks left as the ruler slides in; latest project has stack chips + links
+- [x] 24. Latest project video (public/LatestProject.mp4): loops, muted by default, speaker toggle, plays only while on screen

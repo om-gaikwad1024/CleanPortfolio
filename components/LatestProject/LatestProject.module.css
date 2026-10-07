@@ -33,6 +33,50 @@
   pointer-events: none;
 }
 
+/* Minimal speaker toggle in the video's corner (muted by default). */
+.sound {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.45);
+  color: var(--color-fg);
+  cursor: pointer;
+  transition:
+    background 0.3s ease,
+    border-color 0.3s ease;
+}
+
+.sound:hover {
+  background: rgba(0, 0, 0, 0.7);
+  border-color: rgba(255, 255, 255, 0.6);
+}
+
+.sound:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+}
+
+.sound svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.speaker {
+  fill: currentColor;
+}
+
 .text {
   flex: none;
   width: var(--text-w, 360px);
@@ -58,6 +102,7 @@
   color: rgba(255, 255, 255, 0.7);
   font-size: clamp(14px, 1.2vw, 17px);
   line-height: 1.65;
+  text-wrap: pretty; /* no lone word on the last line */
 }
 
 .stack {

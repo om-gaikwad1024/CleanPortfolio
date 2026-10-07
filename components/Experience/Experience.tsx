@@ -21,7 +21,7 @@ const LATEST_END = 2.6; // card gone; ruler has arrived (it slides in meanwhile)
 // Latest card (motion from legacy/aa.html).
 const IMAGE_W = 560;
 const IMAGE_H = 350;
-const TEXT_W = 360;
+const TEXT_W = 480; // wide enough for a ~3-line description
 const TEXT_GAP = 56;
 const EASE = 0.15 - (7 / 10) * 0.13; // smoothness 7 of 10
 const MAX_SCALE = 2.5; // enlarged as it enters
