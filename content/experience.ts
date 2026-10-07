@@ -36,7 +36,7 @@ export const experience = {
       date: "",
       year: "",
       description:
-        "Beat 200+ participants building a React solution to a live business problem under competition conditions and was the only one offered an internship by the sponsoring startup on the spot.",
+        "Beat 200+ participants building a React solution to a live business problem under competition conditions and was the only one offered an internship by the sponsoring startup.",
       result: "1st of 200+",
     },
     {
@@ -44,12 +44,12 @@ export const experience = {
       image: "/exp2.png",
       category: "work",
       title: "Software Engineer",
-      org: "Cubic Logics",
+      org: "One Shell",
       date: "",
       year: "",
       description:
-        "Developed responsive front-end components using React for enterprise web applications. Supported back-end development using Spring Boot to create and maintain REST APIs, contributing to scalable and reliable application features.",
-      result: "7 months",
+        "Developed responsive front-end components using React for enterprise web applications. Supported back-end development using Spring Boot to create and maintain REST APIs.",
+      result: "2 months",
     },
     {
       image: "/exp3.png",
@@ -65,14 +65,14 @@ export const experience = {
     {
       // PLACEHOLDER — replace with your third hackathon win.
       image: "/exp4.png",
-      category: "hackathon",
-      title: "Winner, Hackathon Name",
-      org: "Organiser · Location",
+      category: "work",
+      title: "Software Engineer",
+      org: "Cubic Logics",
       date: "",
       year: "",
       description:
-        "Placeholder: the problem, what your team shipped in the time limit and why the judges picked it. Keep it to two or three punchy lines.",
-      result: "Winner",
+        "Developed and deployed SPFx web parts across production SharePoint tenants, integrating Microsoft 365 services and following Fluent Design principles.",
+      result: "5 Months",
     },
     {
       // PLACEHOLDER — replace with your freelancing details (10+ months).
@@ -83,7 +83,7 @@ export const experience = {
       date: "",
       year: "",
       description:
-        "Placeholder: the kinds of clients and products you build for, your go-to stack, and a standout result — a launch, a performance win or a returning client.",
+        "Built and deployed full-stack applications across web, mobile, and backend platforms, integrating databases, authentication, APIs, real-time systems, and production infrastructure.",
       result: "10+ months",
     },
   ] satisfies ExperienceEntry[],

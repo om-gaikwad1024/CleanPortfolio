@@ -37,7 +37,12 @@ export default function ExperienceTimeline({ trackRef, entryRefs, yearRef, count
         </span>
       </p>
       <span className={styles.needle} aria-hidden="true" />
-      <HoverPreview images={entries.map((e) => e.image)} active={hovered} shown={shown} />
+      <HoverPreview
+        images={entries.map((e) => e.image)}
+        // Entries without an image show no preview at all.
+        active={hovered !== null && entries[hovered].image ? hovered : null}
+        shown={shown}
+      />
       <ol ref={trackRef} className={styles.track}>
         {entries.map((entry, i) => (
           <TimelineEntry
