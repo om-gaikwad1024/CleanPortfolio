@@ -6,7 +6,7 @@
 - Next.js App Router + TypeScript. Deployed on Vercel; `npm run lint` and `npm run build` must pass.
 - Styling: plain CSS Modules, one `.module.css` per component. Shared variables/reset only in `app/globals.css`.
 - Every visual piece is its own component in `components/<Name>/`.
-- Text and settings (nav, hero copy, services, about text + tech stack, orb config, projects, carousel, latest project, experience, contact) live in `content/`, never hardcoded in components. Projects: `content/projects.ts` (image N = `public/portN.png`).
+- Text and settings (site metadata, nav, hero copy, services, about text + tech stack, orb config, projects, carousel, latest project, experience, contact) live in `content/`, never hardcoded in components. Projects: `content/projects.ts` (image N = `public/portN.png`).
 - Orb shader lives in `components/LiquidOrb/shader.ts`. Don't open it unless the task is about the orb.
 - Carousel engine/shader (`components/LiquidCarousel/engine.ts`, `lens.shader.ts`): don't open unless the task is about the carousel. Source reference: `legacy/carousel.txt`.
 - Dither shader (`components/DitherReveal/dither.shader.ts`, from `legacy/dither.txt`): don't open unless the task is about the dither effect.

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Allison } from "next/font/google";
 import Loader from "@/components/Loader/Loader";
 import SmoothScroll from "@/components/SmoothScroll/SmoothScroll";
+import { site } from "@/content/site";
 import "./globals.css";
 
 // Script face for the hero signature, exposed as --font-allison.
@@ -11,8 +12,26 @@ const allison = Allison({
   variable: "--font-allison",
 });
 
+const title = `${site.name} | ${site.role}`;
+
 export const metadata: Metadata = {
-  title: "OMMM - Liquid Orb",
+  title,
+  description: site.description,
+  applicationName: site.name,
+  authors: [{ name: site.name }],
+  creator: site.name,
+  openGraph: {
+    type: "website",
+    title,
+    description: site.description,
+    siteName: site.name,
+    locale: "en_US",
+  },
+  twitter: {
+    card: "summary",
+    title,
+    description: site.description,
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
