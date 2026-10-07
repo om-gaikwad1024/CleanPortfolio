@@ -45,7 +45,6 @@ export const projects: Project[] = [
       "A graph based investigation tool that traces ultimate beneficial ownership across offshore companies, revealing hidden control structures through chains of intermediate entities using ICIJ Offshore Leaks records.",
     stack: ["Next.js", "TypeScript", "Neo4j", "Cytoscape.js", "Dagre", "CognoDB", "Vercel"],
     github: `https://github.com/om-gaikwad1024/beneficial-ownership-explorer`,
-    live: "https://beneficial-ownership-explorer.vercel.app/",
     image: "/port4.png",
   },
   {
