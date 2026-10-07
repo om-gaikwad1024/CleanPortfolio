@@ -1071,8 +1071,8 @@ export function createEngine(
     function onWheel(e: WheelEvent) {
         if (!pp.wheel) return
         // Only sideways gestures (trackpad swipe, shift+wheel) spin the carousel;
-        // vertical wheel falls through so the page keeps scrolling. Same split
-        // as Lenis' data-lenis-prevent-horizontal on the container.
+        // vertical wheel falls through so the page keeps scrolling (touch has
+        // the same split via touch-action: pan-y).
         if (Math.abs(e.deltaX) < Math.abs(e.deltaY)) return
         e.preventDefault()
         if (inputLocked()) return

@@ -121,8 +121,10 @@ export default function LiquidCarousel({
     <div
       ref={containerRef}
       className={styles.root}
-      // Sideways gestures belong to the carousel; vertical ones still scroll the page.
-      data-lenis-prevent-horizontal=""
+      // No data-lenis-prevent-* here: Lenis' CSS gives those overscroll-behavior:
+      // contain, which on this overflow:hidden box traps vertical touch swipes
+      // (the page can't scroll past on phones). Sideways vs vertical is split by
+      // touch-action: pan-y and the engine's wheel handler instead.
       style={{ background: settings.background ?? "#000000", ...style }}
     />
   );
