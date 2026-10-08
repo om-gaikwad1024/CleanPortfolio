@@ -7,6 +7,7 @@
 - Styling: plain CSS Modules, one `.module.css` per component. Shared variables/reset only in `app/globals.css`.
 - Every visual piece is its own component in `components/<Name>/`.
 - Text and settings (site metadata, nav, hero copy, services, about text + tech stack, orb config, projects, carousel, latest project, experience, contact) live in `content/`, never hardcoded in components. Projects: `content/projects.ts` (image N = `public/portN.png`).
+- Tab icon and link-preview image are Next.js metadata files in `app/`: `icon.png`, `apple-icon.png`, `opengraph-image.png` (+ `.alt.txt`). No code needed.
 - Orb shader lives in `components/LiquidOrb/shader.ts`. Don't open it unless the task is about the orb.
 - Carousel engine/shader (`components/LiquidCarousel/engine.ts`, `lens.shader.ts`): don't open unless the task is about the carousel. Source reference: `legacy/carousel.txt`.
 - Dither shader (`components/DitherReveal/dither.shader.ts`, from `legacy/dither.txt`): don't open unless the task is about the dither effect.

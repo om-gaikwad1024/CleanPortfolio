@@ -28,7 +28,8 @@ export const metadata: Metadata = {
     locale: "en_US",
   },
   twitter: {
-    card: "summary",
+    // Big image card; the image itself is app/opengraph-image.png (see CLAUDE.md).
+    card: "summary_large_image",
     title,
     description: site.description,
   },
